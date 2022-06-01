@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/ADERALDO/AndroidStudioProjects/PMR-Projet1/app/src/main/res/layout/activity_ar_scene.xml" value="0.3875" />
+        <entry key="..\:/Users/ADERALDO/AndroidStudioProjects/PMR-Projet1/app/src/main/res/layout/fragment_ar_sceneview.xml" value="0.3875" />
         <entry key="..\:/Users/lucas/AndroidStudioProjects/PMR-Projet/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2265" />
         <entry key="..\:/Users/lucas/AndroidStudioProjects/PMR-Projet/app/src/main/res/drawable/ic_anchor.xml" value="0.2265" />
         <entry key="..\:/Users/lucas/AndroidStudioProjects/PMR-Projet/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2265" />

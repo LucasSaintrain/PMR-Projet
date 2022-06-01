@@ -2,6 +2,7 @@ package com.example.pmr_projet
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -14,10 +15,14 @@ import io.github.sceneview.utils.doOnApplyWindowInsets
 
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
+    val modelPaths = listOf("models/ship.glb","models/spiderbot.glb","models/Persian.glb","models/gladiador.glb","models/OilCan.glb",
+                            "models/Predator_s.glb")
+    var currentModelIndex = 0
+
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
     lateinit var actionButton: ExtendedFloatingActionButton
-
+    lateinit var changeModelButton: Button
     lateinit var modelNode: ArModelNode
 
     var isLoading = false
@@ -33,6 +38,9 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
         sceneView = view.findViewById(R.id.sceneView)
         loadingView = view.findViewById(R.id.loadingView)
+        changeModelButton = view.findViewById<Button?>(R.id.changeModelButton).apply {
+            setOnClickListener { nextModel() }
+        }
         actionButton = view.findViewById<ExtendedFloatingActionButton>(R.id.actionButton).apply {
             // Add system bar margins
             val bottomMargin = (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
@@ -64,6 +72,31 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         sceneView.addChild(modelNode)
         // Quick workaround until the Node Pick is fixed
         sceneView.gestureDetector.onTouchNode(modelNode)
+    }
+
+    private fun nextModel() {
+        currentModelIndex++
+        if(currentModelIndex >= modelPaths.size) {
+            currentModelIndex = 0
+        }
+        val path = modelPaths[currentModelIndex]
+        changeModel(path)
+    }
+
+    private fun changeModel(modelPath : String) {
+        isLoading = true
+
+        modelNode.loadModelAsync(
+            context = requireContext(),
+            glbFileLocation = modelPath,
+            lifecycle = lifecycle,
+            autoAnimate = true,
+            autoScale = true,
+            // Place the model origin at the bottom center
+            centerOrigin = Position(y = -1.0f)
+        ) {
+            isLoading = false
+        }
     }
 
     fun actionButtonClicked() {
