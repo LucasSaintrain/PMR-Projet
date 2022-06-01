@@ -1,3 +1,16 @@
+// Copyright 2019 Alpha Cephei Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 package com.example.pmr_projet
 
 import android.Manifest
@@ -13,11 +26,13 @@ import android.widget.CompoundButton
 import org.vosk.LibVosk
 import androidx.core.content.ContextCompat
 import android.content.pm.PackageManager
+import android.media.AudioManager
 import androidx.core.app.ActivityCompat
 import org.vosk.android.StorageService
 import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.widget.Button
+import com.google.gson.Gson
 import org.vosk.LogLevel
 import org.vosk.Model
 import org.vosk.Recognizer
@@ -31,9 +46,12 @@ class VoskActivity : Activity(), RecognitionListener {
     private var speechService: SpeechService? = null
     private var speechStreamService: SpeechStreamService? = null
     private var resultView: TextView? = null
+    private lateinit var audioManager: AudioManager
     public override fun onCreate(state: Bundle?) {
         super.onCreate(state)
         setContentView(R.layout.activity_vosk)
+
+        audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager
 
         // Setup layout
         resultView = findViewById(R.id.result_text)
@@ -105,6 +123,20 @@ class VoskActivity : Activity(), RecognitionListener {
     
     """.trimIndent()
         )
+
+        val result = Gson().fromJson(hypothesis, ResultClass::class.java)
+        if (result.text.contains("volume", ignoreCase = true)){
+            if (result.text.contains("higher", ignoreCase = true)){
+                audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI)
+            }
+            if (result.text.contains("lower", ignoreCase = true)) {
+                audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI)
+            }
+        }
+
+
+
+
     }
 
     override fun onFinalResult(hypothesis: String) {
@@ -118,6 +150,7 @@ class VoskActivity : Activity(), RecognitionListener {
         if (speechStreamService != null) {
             speechStreamService = null
         }
+
     }
 
     override fun onPartialResult(hypothesis: String) {
@@ -217,7 +250,7 @@ class VoskActivity : Activity(), RecognitionListener {
         } else {
             setUiState(STATE_MIC)
             try {
-                val rec = Recognizer(model, 16000.0f, "[\"castle dragon hammadi\"]")
+                val rec = Recognizer(model, 16000.0f)
                 speechService = SpeechService(rec, 16000.0f)
                 speechService!!.startListening(this)
             } catch (e: IOException) {
@@ -243,7 +276,8 @@ class VoskActivity : Activity(), RecognitionListener {
         private const val PERMISSIONS_REQUEST_RECORD_AUDIO = 1
     }
 
-    object response{
-        lateinit var text: String
+    class ResultClass (val text: String){
     }
+
 }
+
