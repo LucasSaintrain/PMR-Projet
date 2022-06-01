@@ -45,7 +45,7 @@ class VoskActivity : Activity(), RecognitionListener {
                 isChecked
             )
         }
-        LibVosk.setLogLevel(LogLevel.INFO)
+//        LibVosk.setLogLevel(LogLevel.INFO)
 
         // Check if user has given permission to record audio, init the model after permission is granted
         val permissionCheck =
@@ -241,5 +241,9 @@ class VoskActivity : Activity(), RecognitionListener {
 
         /* Used to handle permission request */
         private const val PERMISSIONS_REQUEST_RECORD_AUDIO = 1
+    }
+
+    object response{
+        lateinit var text: String
     }
 }
