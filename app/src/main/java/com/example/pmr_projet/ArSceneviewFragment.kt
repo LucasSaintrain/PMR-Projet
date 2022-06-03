@@ -1,12 +1,19 @@
 package com.example.pmr_projet
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.ar.core.AugmentedImage
+import com.google.ar.core.AugmentedImageDatabase
+import com.google.ar.core.Config
+import com.google.ar.core.TrackingState
 import io.github.sceneview.ar.ArSceneView
+import io.github.sceneview.ar.getScene
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.EditableTransform
 import io.github.sceneview.ar.node.PlacementMode
@@ -18,6 +25,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     val modelPaths = listOf("models/ship.glb","models/spiderbot.glb","models/Persian.glb","models/gladiador.glb","models/OilCan.glb",
                             "models/Predator_s.glb")
     var currentModelIndex = 0
+    var currentModel: String? = null
 
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
@@ -37,6 +45,35 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         setHasOptionsMenu(true)
 
         sceneView = view.findViewById(R.id.sceneView)
+
+        sceneView.onArSessionCreated = {
+            val imageDatabase = AugmentedImageDatabase(it)
+            val config = it.config
+
+            config.augmentedImageDatabase = requireContext().assets.let {
+                imageDatabase.apply {
+                    addImage("ocean", it.open("backgrounds/ocean.png").use { BitmapFactory.decodeStream(it) })
+                    addImage("alien planet", it.open("backgrounds/alien planet.png").use { BitmapFactory.decodeStream(it) })
+                    addImage("living room", it.open("backgrounds/living room.png").use { BitmapFactory.decodeStream(it) })
+                    addImage("futuristic dystopia", it.open("backgrounds/futuristic dystopia.png").use { BitmapFactory.decodeStream(it) })
+                }
+            }
+
+            it.configure(config)
+        }
+
+        sceneView.onArFrame = {
+            for (img in it.updatedAugmentedImages) {
+                when (img.name) {
+                    "ocean" -> changeModel("models/ship.glb")
+                    "alien planet" -> changeModel("models/Predator_s.glb")
+                    "living room" -> changeModel("models/Persian.glb")
+                    "futuristic dystopia" -> changeModel("models/spiderbot.glb")
+                }
+
+            }
+        }
+
         loadingView = view.findViewById(R.id.loadingView)
         changeModelButton = view.findViewById<Button?>(R.id.changeModelButton).apply {
             setOnClickListener { nextModel() }
@@ -51,25 +88,14 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             setOnClickListener { actionButtonClicked() }
         }
 
-        isLoading = true
         modelNode = ArModelNode(placementMode = PlacementMode.BEST_AVAILABLE).apply {
-            loadModelAsync(
-                context = requireContext(),
-                glbFileLocation = "models/ship.glb",
-                lifecycle = lifecycle,
-                autoAnimate = true,
-                autoScale = true,
-                // Place the model origin at the bottom center
-                centerOrigin = Position(y = -1.0f)
-            ) {
-                isLoading = false
-            }
             onTrackingChanged = { _, isTracking, _ ->
                 actionButton.isGone = !isTracking
             }
             editableTransforms = EditableTransform.ALL
         }
         sceneView.addChild(modelNode)
+        //nextModel()
         // Quick workaround until the Node Pick is fixed
         sceneView.gestureDetector.onTouchNode(modelNode)
     }
@@ -84,8 +110,10 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     }
 
     private fun changeModel(modelPath : String) {
-        isLoading = true
+        if (modelPath == currentModel) return
+        currentModel = modelPath
 
+        isLoading = true
         modelNode.loadModelAsync(
             context = requireContext(),
             glbFileLocation = modelPath,
