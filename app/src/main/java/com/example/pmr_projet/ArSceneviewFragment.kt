@@ -12,6 +12,8 @@ import com.google.ar.core.AugmentedImage
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
 import com.google.ar.core.TrackingState
+import dev.romainguy.kotlin.math.Float3
+import dev.romainguy.kotlin.math.max
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.getScene
 import io.github.sceneview.ar.node.ArModelNode
@@ -109,7 +111,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         changeModel(path)
     }
 
-    private fun changeModel(modelPath : String) {
+    private fun changeModel(modelPath : String, units : Float = 0.04f) {
         if (modelPath == currentModel) return
         currentModel = modelPath
 
@@ -118,12 +120,13 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             context = requireContext(),
             glbFileLocation = modelPath,
             lifecycle = lifecycle,
-            autoAnimate = true,
-            autoScale = true,
-            // Place the model origin at the bottom center
-            centerOrigin = Position(y = -1.0f)
+            autoAnimate = true
         ) {
             isLoading = false
+            it.filamentAsset?.let { asset ->
+                val halfExtent = asset.boundingBox.halfExtent[0]
+                modelNode.modelScale = Float3(units / halfExtent)
+            }
         }
     }
 
