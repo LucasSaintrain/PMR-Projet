@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/lucas/AndroidStudioProjects/PMR-Projet/app/src/main/res/layout/activity_ar_scene.xml" value="0.25" />
         <entry key="..\:/Users/lucas/AndroidStudioProjects/PMR-Projet/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/lucas/AndroidStudioProjects/PMR-Projet/app/src/main/res/layout/activity_vosk.xml" value="0.25" />
         <entry key="..\:/Users/lucas/AndroidStudioProjects/PMR-Projet/app/src/main/res/layout/fragment_ar_sceneview.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/activity_vosk.xml" value="0.15648148148148147" />

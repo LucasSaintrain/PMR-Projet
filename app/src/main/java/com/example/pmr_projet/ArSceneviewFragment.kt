@@ -31,7 +31,6 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
-    lateinit var actionButton: ExtendedFloatingActionButton
     lateinit var changeModelButton: Button
     lateinit var modelNode: ArModelNode
 
@@ -43,8 +42,6 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setHasOptionsMenu(true)
 
         sceneView = view.findViewById(R.id.sceneView)
 
@@ -80,20 +77,8 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         changeModelButton = view.findViewById<Button?>(R.id.changeModelButton).apply {
             setOnClickListener { nextModel() }
         }
-        actionButton = view.findViewById<ExtendedFloatingActionButton>(R.id.actionButton).apply {
-            // Add system bar margins
-            val bottomMargin = (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
-            doOnApplyWindowInsets { systemBarsInsets ->
-                (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
-                    systemBarsInsets.bottom + bottomMargin
-            }
-            setOnClickListener { actionButtonClicked() }
-        }
 
         modelNode = ArModelNode(placementMode = PlacementMode.BEST_AVAILABLE).apply {
-            onTrackingChanged = { _, isTracking, _ ->
-                actionButton.isGone = !isTracking
-            }
             editableTransforms = EditableTransform.ALL
         }
         sceneView.addChild(modelNode)
@@ -127,19 +112,6 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
                 val halfExtent = asset.boundingBox.halfExtent[0]
                 modelNode.modelScale = Float3(units / halfExtent)
             }
-        }
-    }
-
-    fun actionButtonClicked() {
-        if (!modelNode.isAnchored && modelNode.anchor()) {
-            actionButton.text = getString(R.string.move_object)
-            actionButton.setIconResource(R.drawable.ic_target)
-            sceneView.planeRenderer.isVisible = false
-        } else {
-            modelNode.anchor = null
-            actionButton.text = getString(R.string.place_object)
-            actionButton.setIconResource(R.drawable.ic_anchor)
-            sceneView.planeRenderer.isVisible = true
         }
     }
 }

@@ -20,12 +20,12 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene) {
             fitsSystemWindows = false
         )
 
-        //setSupportActionBar(findViewById<Toolbar>(R.id.toolbar)?.apply {
-        //    doOnApplyWindowInsets { systemBarsInsets ->
-        //        (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
-        //    }
-        //    title = ""
-        //})
+        setSupportActionBar(findViewById<Toolbar>(R.id.toolbar)?.apply {
+            doOnApplyWindowInsets { systemBarsInsets ->
+                (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
+            }
+            title = ""
+        })
 
         supportFragmentManager.commit {
             add(R.id.containerFragment, ArSceneviewFragment::class.java, Bundle())
