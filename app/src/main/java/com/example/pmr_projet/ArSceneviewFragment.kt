@@ -10,9 +10,13 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.ar.core.*
 import dev.romainguy.kotlin.math.Float3
+import dev.romainguy.kotlin.math.Quaternion
 import dev.romainguy.kotlin.math.max
+import dev.romainguy.kotlin.math.rotation
 import io.github.sceneview.ar.ArSceneView
+import io.github.sceneview.ar.arcore.quaternion
 import io.github.sceneview.ar.getScene
+import io.github.sceneview.ar.localRotation
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.EditableTransform
 import io.github.sceneview.ar.node.PlacementMode
@@ -62,11 +66,13 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             for (img in it.updatedAugmentedImages) {
                 if (img.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
                     modelNode.isVisible = true
+
+                    val anchor = img.anchors.firstOrNull() ?: img.createAnchor(img.centerPose.compose(Pose.makeRotation(Quaternion.fromEuler(0f,3f).toFloatArray())))
                     when (img.name) {
-                        "ocean" -> changeModel("models/ship.glb", img.createAnchor(img.centerPose))
-                        "alien planet" -> changeModel("models/Predator_s.glb", img.createAnchor(img.centerPose))
-                        "living room" -> changeModel("models/Persian.glb", img.createAnchor(img.centerPose))
-                        "futuristic dystopia" -> changeModel("models/spiderbot.glb", img.createAnchor(img.centerPose))
+                        "ocean" -> changeModel("models/ship.glb", anchor)
+                        "alien planet" -> changeModel("models/Predator_s.glb", anchor)
+                        "living room" -> changeModel("models/Persian.glb", anchor)
+                        "futuristic dystopia" -> changeModel("models/spiderbot.glb", anchor)
                     }
                 } else {
                     for (anchor in img.anchors){anchor.detach()}
@@ -99,22 +105,25 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     }
 
     private fun changeModel(modelPath : String, anchor: Anchor? = null, units : Float = 0.04f) {
-        if (modelPath == currentModel) return
-        currentModel = modelPath
+        if (modelPath != currentModel) {
+            currentModel = modelPath
 
-        isLoading = true
-        modelNode.loadModelAsync(
-            context = requireContext(),
-            glbFileLocation = modelPath,
-            lifecycle = lifecycle,
-            autoAnimate = true
-        ) {
-            isLoading = false
-            it.filamentAsset?.let { asset ->
-                val halfExtent = asset.boundingBox.halfExtent[0]
-                modelNode.modelScale = Float3(units / halfExtent)
+            isLoading = true
+            modelNode.loadModelAsync(
+                context = requireContext(),
+                glbFileLocation = modelPath,
+                lifecycle = lifecycle,
+                autoAnimate = true
+            ) {
+                isLoading = false
+                it.filamentAsset?.let { asset ->
+                    val halfExtent = asset.boundingBox.halfExtent[0]
+                    modelNode.modelScale = Float3(units / halfExtent)
+                }
             }
         }
-        modelNode.anchor = anchor
+        if (modelNode.anchor != anchor) {
+            modelNode.anchor = anchor
+        }
     }
 }
