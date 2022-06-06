@@ -61,12 +61,16 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         sceneView.onArFrame = {
             for (img in it.updatedAugmentedImages) {
                 if (img.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
+                    modelNode.isVisible = true
                     when (img.name) {
                         "ocean" -> changeModel("models/ship.glb", img.createAnchor(img.centerPose))
                         "alien planet" -> changeModel("models/Predator_s.glb", img.createAnchor(img.centerPose))
                         "living room" -> changeModel("models/Persian.glb", img.createAnchor(img.centerPose))
                         "futuristic dystopia" -> changeModel("models/spiderbot.glb", img.createAnchor(img.centerPose))
                     }
+                } else {
+                    for (anchor in img.anchors){anchor.detach()}
+                    modelNode.isVisible = false
                 }
             }
         }
