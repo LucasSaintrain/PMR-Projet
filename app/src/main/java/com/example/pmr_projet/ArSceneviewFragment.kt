@@ -8,10 +8,7 @@ import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.ar.core.AugmentedImage
-import com.google.ar.core.AugmentedImageDatabase
-import com.google.ar.core.Config
-import com.google.ar.core.TrackingState
+import com.google.ar.core.*
 import dev.romainguy.kotlin.math.Float3
 import dev.romainguy.kotlin.math.max
 import io.github.sceneview.ar.ArSceneView
@@ -63,13 +60,14 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
         sceneView.onArFrame = {
             for (img in it.updatedAugmentedImages) {
-                when (img.name) {
-                    "ocean" -> changeModel("models/ship.glb")
-                    "alien planet" -> changeModel("models/Predator_s.glb")
-                    "living room" -> changeModel("models/Persian.glb")
-                    "futuristic dystopia" -> changeModel("models/spiderbot.glb")
+                if (img.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
+                    when (img.name) {
+                        "ocean" -> changeModel("models/ship.glb", img.createAnchor(img.centerPose))
+                        "alien planet" -> changeModel("models/Predator_s.glb", img.createAnchor(img.centerPose))
+                        "living room" -> changeModel("models/Persian.glb", img.createAnchor(img.centerPose))
+                        "futuristic dystopia" -> changeModel("models/spiderbot.glb", img.createAnchor(img.centerPose))
+                    }
                 }
-
             }
         }
 
@@ -96,7 +94,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         changeModel(path)
     }
 
-    private fun changeModel(modelPath : String, units : Float = 0.04f) {
+    private fun changeModel(modelPath : String, anchor: Anchor? = null, units : Float = 0.04f) {
         if (modelPath == currentModel) return
         currentModel = modelPath
 
@@ -113,5 +111,6 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
                 modelNode.modelScale = Float3(units / halfExtent)
             }
         }
+        modelNode.anchor = anchor
     }
 }
