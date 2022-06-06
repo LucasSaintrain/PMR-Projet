@@ -3,37 +3,18 @@ package com.example.pmr_projet
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.filament.utils.Quaternion
 import com.google.ar.core.*
-import dev.romainguy.kotlin.math.Float3
-import dev.romainguy.kotlin.math.Quaternion
-import dev.romainguy.kotlin.math.max
-import dev.romainguy.kotlin.math.rotation
 import io.github.sceneview.ar.ArSceneView
-import io.github.sceneview.ar.arcore.quaternion
-import io.github.sceneview.ar.getScene
-import io.github.sceneview.ar.localRotation
-import io.github.sceneview.ar.node.ArModelNode
-import io.github.sceneview.ar.node.EditableTransform
-import io.github.sceneview.ar.node.PlacementMode
-import io.github.sceneview.math.Position
-import io.github.sceneview.utils.doOnApplyWindowInsets
+import java.util.*
 
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
-
-    val modelPaths = listOf("models/ship.glb","models/spiderbot.glb","models/Persian.glb","models/gladiador.glb","models/OilCan.glb",
-                            "models/Predator_s.glb")
-    var currentModelIndex = 0
-    var currentModel: String? = null
-
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
-    lateinit var changeModelButton: Button
-    lateinit var modelNode: ArModelNode
+    lateinit var scenes: Map<String,ArScene>
 
     var isLoading = false
         set(value) {
@@ -62,68 +43,61 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             it.configure(config)
         }
 
+        val catPose = Pose.makeTranslation(-0.03f,0f,-0.025f)
+            .compose(Pose.makeRotation(Quaternion.fromEulerZYX(0f,1.5f).toFloatArray()))
+
+        val catModel = ArScene.ArModel("models/Persian.glb", catPose, 0.008f)
+        val spiderbotModel = ArScene.ArModel("models/spiderbot.glb",Pose.makeTranslation(0.04f,0f,0f),0.01f)
+
+        val alienModel = ArScene.ArModel("models/Predator_s.glb",Pose.IDENTITY,0.03f)
+        val shipModel = ArScene.ArModel("models/ship.glb",Pose.IDENTITY,0.03f)
+
+        val livingRoomScene = ArScene(setOf(catModel,spiderbotModel))
+        val dystopiaScene = ArScene(setOf(spiderbotModel))
+        val planetScene = ArScene(setOf(alienModel))
+        val oceanScene = ArScene(setOf(shipModel))
+
         sceneView.onArFrame = {
+            isLoading = livingRoomScene.isLoading && dystopiaScene.isLoading && planetScene.isLoading && oceanScene.isLoading
             for (img in it.updatedAugmentedImages) {
                 if (img.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
-                    modelNode.isVisible = true
-
-                    val anchor = img.anchors.firstOrNull() ?: img.createAnchor(img.centerPose.compose(Pose.makeRotation(Quaternion.fromEuler(0f,3f).toFloatArray())))
                     when (img.name) {
-                        "ocean" -> changeModel("models/ship.glb", anchor)
-                        "alien planet" -> changeModel("models/Predator_s.glb", anchor)
-                        "living room" -> changeModel("models/Persian.glb", anchor)
-                        "futuristic dystopia" -> changeModel("models/spiderbot.glb", anchor)
+                        "ocean" -> {
+                            oceanScene.isVisible = true
+                            if (!oceanScene.isLoaded) {
+                                oceanScene.load(img, requireContext(), lifecycle, sceneView)
+                            }
+                        }
+                        "alien planet" -> {
+                            planetScene.isVisible = true
+                            if (!planetScene.isLoaded) {
+                                planetScene.load(img, requireContext(), lifecycle, sceneView)
+                            }
+                        }
+                        "living room" -> {
+                            livingRoomScene.isVisible = true
+                            if (!livingRoomScene.isLoaded) {
+                                livingRoomScene.load(img, requireContext(), lifecycle, sceneView)
+                            }
+                        }
+                        "futuristic dystopia" -> {
+                            dystopiaScene.isVisible = true
+                            if (!dystopiaScene.isLoaded) {
+                                dystopiaScene.load(img, requireContext(), lifecycle, sceneView)
+                            }
+                        }
                     }
                 } else {
-                    for (anchor in img.anchors){anchor.detach()}
-                    modelNode.isVisible = false
+                    when(img.name){
+                        "ocean" -> oceanScene.isVisible = false
+                        "alien planet" -> planetScene.isVisible = false
+                        "living room" -> livingRoomScene.isVisible = false
+                        "futuristic dystopia" -> dystopiaScene.isVisible = false
+                    }
                 }
             }
         }
 
         loadingView = view.findViewById(R.id.loadingView)
-        changeModelButton = view.findViewById<Button?>(R.id.changeModelButton).apply {
-            setOnClickListener { nextModel() }
-        }
-
-        modelNode = ArModelNode(placementMode = PlacementMode.BEST_AVAILABLE).apply {
-            editableTransforms = EditableTransform.ALL
-        }
-        sceneView.addChild(modelNode)
-        //nextModel()
-        // Quick workaround until the Node Pick is fixed
-        sceneView.gestureDetector.onTouchNode(modelNode)
-    }
-
-    private fun nextModel() {
-        currentModelIndex++
-        if(currentModelIndex >= modelPaths.size) {
-            currentModelIndex = 0
-        }
-        val path = modelPaths[currentModelIndex]
-        changeModel(path)
-    }
-
-    private fun changeModel(modelPath : String, anchor: Anchor? = null, units : Float = 0.04f) {
-        if (modelPath != currentModel) {
-            currentModel = modelPath
-
-            isLoading = true
-            modelNode.loadModelAsync(
-                context = requireContext(),
-                glbFileLocation = modelPath,
-                lifecycle = lifecycle,
-                autoAnimate = true
-            ) {
-                isLoading = false
-                it.filamentAsset?.let { asset ->
-                    val halfExtent = asset.boundingBox.halfExtent[0]
-                    modelNode.modelScale = Float3(units / halfExtent)
-                }
-            }
-        }
-        if (modelNode.anchor != anchor) {
-            modelNode.anchor = anchor
-        }
     }
 }
