@@ -66,10 +66,14 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
         sceneView.onArFrame = {
             isLoading = scenes.any { it.value.isLoading }
+
             for (img in it.updatedAugmentedImages) {
                 if (img.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
                     scenes[img.name]?.run {
                         if (!isLoaded) {
+                            it.updatedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }.forEach {
+                                scenes[it.name]?.unload()
+                            }
                             load(img.createAnchor(img.centerPose), sceneView)
                         }
                         sceneNode.isVisible = true
