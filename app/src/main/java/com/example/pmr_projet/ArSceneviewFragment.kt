@@ -62,43 +62,20 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         val planetScene = ArScene(setOf(alienModel))
         val oceanScene = ArScene(setOf(shipModel))
 
+        scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "ocean" to oceanScene)
+
         sceneView.onArFrame = {
-            isLoading = livingRoomScene.isLoading && dystopiaScene.isLoading && planetScene.isLoading && oceanScene.isLoading
+            isLoading = scenes.any { it.value.isLoading }
             for (img in it.updatedAugmentedImages) {
                 if (img.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
-                    when (img.name) {
-                        "ocean" -> {
-                            if (!oceanScene.isLoaded) {
-                                oceanScene.load(img.createAnchor(img.centerPose), sceneView)
-                            }
-                            oceanScene.sceneNode.isVisible = true
+                    scenes[img.name]?.run {
+                        if (!isLoaded) {
+                            load(img.createAnchor(img.centerPose), sceneView)
                         }
-                        "alien planet" -> {
-                            if (!planetScene.isLoaded) {
-                                planetScene.load(img.createAnchor(img.centerPose), sceneView)
-                            }
-                            planetScene.sceneNode.isVisible = true
-                        }
-                        "living room" -> {
-                            if (!livingRoomScene.isLoaded) {
-                                livingRoomScene.load(img.createAnchor(img.centerPose), sceneView)
-                            }
-                            livingRoomScene.sceneNode.isVisible = true
-                        }
-                        "futuristic dystopia" -> {
-                            if (!dystopiaScene.isLoaded) {
-                                dystopiaScene.load(img.createAnchor(img.centerPose), sceneView)
-                            }
-                            dystopiaScene.sceneNode.isVisible = true
-                        }
+                        sceneNode.isVisible = true
                     }
                 } else {
-                    when(img.name){
-                        "ocean" -> oceanScene.sceneNode.isVisible = false
-                        "alien planet" -> planetScene.sceneNode.isVisible = false
-                        "living room" -> livingRoomScene.sceneNode.isVisible = false
-                        "futuristic dystopia" -> dystopiaScene.sceneNode.isVisible = false
-                    }
+                    scenes[img.name]?.sceneNode?.isVisible = false
                 }
             }
         }
