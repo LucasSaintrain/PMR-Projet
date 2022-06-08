@@ -9,11 +9,16 @@ import androidx.fragment.app.Fragment
 import com.google.android.filament.utils.Quaternion
 import com.google.ar.core.*
 import io.github.sceneview.ar.ArSceneView
+import io.github.sceneview.ar.node.ArModelNode
+import io.github.sceneview.ar.node.ArNode
+import io.github.sceneview.ar.node.EditableTransform
+import io.github.sceneview.ar.node.PlacementMode
 import java.util.*
 
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
+    lateinit var sceneNode: ArModelNode
     lateinit var scenes: Map<String,ArScene>
 
     var isLoading = false
@@ -63,36 +68,36 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
                 if (img.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
                     when (img.name) {
                         "ocean" -> {
-                            oceanScene.isVisible = true
                             if (!oceanScene.isLoaded) {
-                                oceanScene.load(img, requireContext(), lifecycle, sceneView)
+                                oceanScene.load(img.createAnchor(img.centerPose), sceneView)
                             }
+                            oceanScene.sceneNode.isVisible = true
                         }
                         "alien planet" -> {
-                            planetScene.isVisible = true
                             if (!planetScene.isLoaded) {
-                                planetScene.load(img, requireContext(), lifecycle, sceneView)
+                                planetScene.load(img.createAnchor(img.centerPose), sceneView)
                             }
+                            planetScene.sceneNode.isVisible = true
                         }
                         "living room" -> {
-                            livingRoomScene.isVisible = true
                             if (!livingRoomScene.isLoaded) {
-                                livingRoomScene.load(img, requireContext(), lifecycle, sceneView)
+                                livingRoomScene.load(img.createAnchor(img.centerPose), sceneView)
                             }
+                            livingRoomScene.sceneNode.isVisible = true
                         }
                         "futuristic dystopia" -> {
-                            dystopiaScene.isVisible = true
                             if (!dystopiaScene.isLoaded) {
-                                dystopiaScene.load(img, requireContext(), lifecycle, sceneView)
+                                dystopiaScene.load(img.createAnchor(img.centerPose), sceneView)
                             }
+                            dystopiaScene.sceneNode.isVisible = true
                         }
                     }
                 } else {
                     when(img.name){
-                        "ocean" -> oceanScene.isVisible = false
-                        "alien planet" -> planetScene.isVisible = false
-                        "living room" -> livingRoomScene.isVisible = false
-                        "futuristic dystopia" -> dystopiaScene.isVisible = false
+                        "ocean" -> oceanScene.sceneNode.isVisible = false
+                        "alien planet" -> planetScene.sceneNode.isVisible = false
+                        "living room" -> livingRoomScene.sceneNode.isVisible = false
+                        "futuristic dystopia" -> dystopiaScene.sceneNode.isVisible = false
                     }
                 }
             }
