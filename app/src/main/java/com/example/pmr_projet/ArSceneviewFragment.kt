@@ -48,14 +48,14 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             it.configure(config)
         }
 
-        val catPose = Pose.makeTranslation(-0.03f,0f,-0.025f)
+        val catPose = Pose.makeTranslation(-0.20f,0f,-0.25f)
             .compose(Pose.makeRotation(Quaternion.fromEulerZYX(0f,1.5f).toFloatArray()))
 
-        val catModel = ArScene.ArModel("models/Persian.glb", catPose, 0.008f)
-        val spiderbotModel = ArScene.ArModel("models/spiderbot.glb",Pose.makeTranslation(0.04f,0f,0f),0.01f)
+        val catModel = ArScene.ArModel("models/Persian.glb", catPose, 0.1f)
+        val spiderbotModel = ArScene.ArModel("models/spiderbot.glb",Pose.makeTranslation(0.35f,0f,0f),0.2f)
 
-        val alienModel = ArScene.ArModel("models/Predator_s.glb",Pose.IDENTITY,0.03f)
-        val shipModel = ArScene.ArModel("models/ship.glb",Pose.IDENTITY,0.03f)
+        val alienModel = ArScene.ArModel("models/Predator_s.glb",Pose.IDENTITY,0.3f)
+        val shipModel = ArScene.ArModel("models/ship.glb",Pose.IDENTITY,0.3f)
 
         val livingRoomScene = ArScene(setOf(catModel,spiderbotModel))
         val dystopiaScene = ArScene(setOf(spiderbotModel))
@@ -74,12 +74,14 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
                             it.updatedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }.forEach {
                                 scenes[it.name]?.unload()
                             }
-                            load(img.createAnchor(img.centerPose), sceneView)
+                            img.let {
+                                load(it.createAnchor(it.centerPose), it.extentX, it.extentZ, sceneView)
+                            }
                         }
                         sceneNode.isVisible = true
                     }
                 } else {
-                    scenes[img.name]?.sceneNode?.isVisible = false
+                     scenes[img.name]?.sceneNode?.isVisible = false
                 }
             }
         }

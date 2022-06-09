@@ -1,8 +1,10 @@
 package com.example.pmr_projet
 
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import com.google.ar.core.*
+import com.google.gson.ToNumberStrategy
 import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.SceneView
 import io.github.sceneview.ar.ArSceneView
@@ -23,18 +25,23 @@ class ArScene(val models: Set<ArModel>) {
     val isLoading
         get() = models.any { it.isLoading }
 
-    fun load(anchor: Anchor, sceneView: SceneView) : ArNode {
+    fun load(anchor: Anchor, extentX: Float, extentZ: Float, sceneView: SceneView) : ArNode {
         isLoaded = true
 
-        sceneNode.anchor = anchor
         sceneView.addChild(sceneNode)
+        sceneNode.anchor = anchor
+        sceneNode.worldScale = Float3(extentX, 1f, extentZ)
 
         models.forEach {
             val modelNode = ArNode()
             sceneNode.addChild(modelNode)
             modelNodes.add(modelNode)
 
-            modelNode.pose = it.pose
+            modelNode.apply {
+                pose = it.initialPose
+                scale = Float3(it.initialScale)
+                worldScale = Float3(worldScale[it.parentScaleAxis.value])
+            }
             loadModel(it, modelNode, sceneView.context, sceneView.lifecycle)
         }
 
@@ -56,17 +63,24 @@ class ArScene(val models: Set<ArModel>) {
             isLoading = true
             modelNode.loadModelAsync(context,lifecycle,glbPath,autoAnimate,false
             ) {
-                //Set scale (using the x-axis)
+                //Set scale (using the choosen axis)
                 it.filamentAsset?.let { asset ->
-                    val halfExtent = asset.boundingBox.halfExtent[0]
-                    modelNode.modelScale = Float3(scale / halfExtent)
+                    val halfExtent = asset.boundingBox.halfExtent[modelScaleAxis.value]
+                    modelNode.modelScale = Float3(0.5f / halfExtent)
                 }
                 isLoading = false
             }
         }
     }
 
-    data class ArModel(val glbPath: String, val pose: Pose, val scale: Float, val autoAnimate: Boolean = true){
+    data class ArModel(val glbPath: String, val initialPose: Pose, val initialScale: Float,
+                       val modelScaleAxis: DirectionXYZ = DirectionXYZ.X,
+                       val parentScaleAxis: DirectionXYZ = DirectionXYZ.X,
+                       val autoAnimate: Boolean = true) {
         var isLoading = false
+
+        enum class DirectionXYZ(val value: Int) {
+            X(0), Y(1), Z(2)
+        }
     }
 }
