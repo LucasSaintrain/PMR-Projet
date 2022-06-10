@@ -2,18 +2,24 @@ package com.example.pmr_projet
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
-import com.google.android.filament.utils.Quaternion
 import com.google.ar.core.*
+import com.google.ar.sceneform.math.Vector3
+import dev.romainguy.kotlin.math.Float3
+import dev.romainguy.kotlin.math.Quaternion
+import dev.romainguy.kotlin.math.length
+import dev.romainguy.kotlin.math.normalize
 import io.github.sceneview.ar.ArSceneView
+import io.github.sceneview.ar.arcore.*
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.ArNode
-import io.github.sceneview.ar.node.EditableTransform
-import io.github.sceneview.ar.node.PlacementMode
+import io.github.sceneview.math.*
 import java.util.*
+import kotlin.math.*
 
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     lateinit var sceneView: ArSceneView
@@ -49,7 +55,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         }
 
         val catPose = Pose.makeTranslation(-0.20f,0f,-0.25f)
-            .compose(Pose.makeRotation(Quaternion.fromEulerZYX(0f,1.5f).toFloatArray()))
+            .compose(Pose.makeRotation(Quaternion.fromEuler(0f,1.5f).toFloatArray()))
 
         val catModel = ArScene.ArModel("models/Persian.glb", catPose, 0.1f)
         val spiderbotModel = ArScene.ArModel("models/spiderbot.glb",Pose.makeTranslation(0.35f,0f,0f),0.2f)
@@ -72,7 +78,9 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
                     scenes[img.name]?.run {
                         if (!isLoaded) {
                             it.updatedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }.forEach {
-                                scenes[it.name]?.unload()
+                                scenes[it.name]?.run {
+                                    if (isLoaded) { unload() }
+                                }
                             }
                             img.let {
                                 load(it.createAnchor(it.centerPose), it.extentX, it.extentZ, sceneView)
@@ -80,8 +88,17 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
                         }
                         sceneNode.isVisible = true
                     }
-                } else {
-                     scenes[img.name]?.sceneNode?.isVisible = false
+                } else if (img.trackingMethod == AugmentedImage.TrackingMethod.LAST_KNOWN_POSE) {
+                    // Hide scene if the image angle > 60
+                    val cameraDirection = it.camera.pose.zDirection.toVector3().normalized()
+                    val imageDirection = img.centerPose.yDirection.toVector3().normalized()
+                    val angle = (cameraDirection to imageDirection).let { (v1,v2) ->
+                        acos(v1.x*v2.x + v1.y*v2.y + v1.z*v2.z) * 180/PI
+                    }
+
+                    if (angle > 60) {
+                        scenes[img.name]?.sceneNode?.isVisible = false
+                    }
                 }
             }
         }
