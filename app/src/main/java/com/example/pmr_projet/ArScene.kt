@@ -1,61 +1,66 @@
 package com.example.pmr_projet
 
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.Lifecycle
-import com.google.ar.core.*
-import com.google.gson.ToNumberStrategy
+import com.google.ar.core.Anchor
+import com.google.ar.core.Pose
+import com.google.ar.sceneform.rendering.RenderableInternalFilamentAssetData
 import dev.romainguy.kotlin.math.Float3
+import io.github.sceneview.Filament.renderableManager
 import io.github.sceneview.SceneView
-import io.github.sceneview.ar.ArSceneView
-import io.github.sceneview.ar.arcore.position
-import io.github.sceneview.ar.arcore.quaternion
-import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.ArNode
-import io.github.sceneview.ar.node.EditableTransform
-import io.github.sceneview.ar.node.PlacementMode
-import io.github.sceneview.node.ModelNode
-import io.github.sceneview.node.Node
+import io.github.sceneview.light.destroy
+import io.github.sceneview.model.destroy
 
 class ArScene(val models: Set<ArModel>) {
-    val modelNodes = mutableSetOf<ArNode>()
-    val sceneNode  = ArNode()
+    private val modelNodes = mutableSetOf<ArNode>()
+    var sceneNode : ArNode? = null
     var isLoaded = false
 
-    val isLoading
-        get() = models.any { it.isLoading }
+    var isLoading = false
+        get() = field || models.any { it.isLoading }
 
-    fun load(anchor: Anchor, extentX: Float, extentZ: Float, sceneView: SceneView) : ArNode {
-        isLoaded = true
+    fun load(anchor: Anchor, extentX: Float, extentZ: Float, sceneView: SceneView) : ArNode? {
+        if (isLoaded || isLoading) return sceneNode
+        isLoading = true
+        sceneNode = ArNode()
 
-        sceneView.addChild(sceneNode)
-        sceneNode.anchor = anchor
-        sceneNode.worldScale = Float3(extentX, 1f, extentZ)
+        sceneNode!!.apply {
+            sceneView.addChild(this)
+            this.anchor = anchor
+            worldScale = Float3(extentX, 1f, extentZ)
+        }
 
         models.forEach {
-            val modelNode = ArNode()
-            sceneNode.addChild(modelNode)
-            modelNodes.add(modelNode)
+            ArNode().apply {
+                modelNodes.add(this)
+                sceneNode!!.addChild(this)
 
-            modelNode.apply {
                 pose = it.initialPose
                 scale = Float3(it.initialScale)
                 worldScale = Float3(worldScale[it.parentScaleAxis.value])
+
+                loadModel(it, this, sceneView.context, sceneView.lifecycle)
             }
-            loadModel(it, modelNode, sceneView.context, sceneView.lifecycle)
         }
 
+        isLoaded = true
+        isLoading = false
         return sceneNode
     }
 
     fun unload() {
-        modelNodes.forEach {
-            it.destroy()
-        }
+        if (!isLoaded || isLoading) return
+        isLoading = true
+
+        modelNodes.forEach { it.destroy() }
         modelNodes.clear()
-        sceneNode.destroy()
+
+        sceneNode?.destroy()
+        sceneNode = null
 
         isLoaded = false
+        isLoading = false
     }
 
     private fun loadModel(model: ArModel, modelNode: ArNode, context: Context, lifecycle: Lifecycle) {
@@ -63,7 +68,7 @@ class ArScene(val models: Set<ArModel>) {
             isLoading = true
             modelNode.loadModelAsync(context,lifecycle,glbPath,autoAnimate,false
             ) {
-                //Set scale (using the choosen axis)
+                //Set scale (using the chosen axis)
                 it.filamentAsset?.let { asset ->
                     val halfExtent = asset.boundingBox.halfExtent[modelScaleAxis.value]
                     modelNode.modelScale = Float3(0.5f / halfExtent)

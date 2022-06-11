@@ -24,7 +24,6 @@ import kotlin.math.*
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
-    lateinit var sceneNode: ArModelNode
     lateinit var scenes: Map<String,ArScene>
 
     var isLoading = false
@@ -76,17 +75,15 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             for (img in it.updatedAugmentedImages) {
                 if (img.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
                     scenes[img.name]?.run {
-                        if (!isLoaded) {
+                        if (!isLoaded && !isLoading) {
                             it.updatedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }.forEach {
-                                scenes[it.name]?.run {
-                                    if (isLoaded) { unload() }
-                                }
+                                scenes[it.name]?.unload()
                             }
                             img.let {
                                 load(it.createAnchor(it.centerPose), it.extentX, it.extentZ, sceneView)
                             }
                         }
-                        sceneNode.isVisible = true
+                        sceneNode?.isVisible = true
                     }
                 } else if (img.trackingMethod == AugmentedImage.TrackingMethod.LAST_KNOWN_POSE) {
                     // Hide scene if the image angle > 60
