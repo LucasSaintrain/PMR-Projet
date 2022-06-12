@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package com.example.pmr_projet
+package com.example.pmr_projet.activities
 
 import android.Manifest
 import android.app.Activity
@@ -20,10 +20,8 @@ import org.vosk.android.SpeechStreamService
 import android.widget.TextView
 import android.os.Bundle
 import com.example.pmr_projet.R
-import com.example.pmr_projet.VoskActivity
 import android.widget.ToggleButton
 import android.widget.CompoundButton
-import org.vosk.LibVosk
 import androidx.core.content.ContextCompat
 import android.content.pm.PackageManager
 import android.media.AudioManager
@@ -33,7 +31,6 @@ import android.text.method.ScrollingMovementMethod
 import android.view.View
 import android.widget.Button
 import com.google.gson.Gson
-import org.vosk.LogLevel
 import org.vosk.Model
 import org.vosk.Recognizer
 import org.vosk.android.RecognitionListener

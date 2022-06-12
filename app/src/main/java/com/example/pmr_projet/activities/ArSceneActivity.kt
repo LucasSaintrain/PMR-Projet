@@ -1,10 +1,12 @@
-package com.example.pmr_projet
+package com.example.pmr_projet.activities
 
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.commit
+import com.example.pmr_projet.ar_scene.ArSceneviewFragment
+import com.example.pmr_projet.R
 import io.github.sceneview.utils.doOnApplyWindowInsets
 import io.github.sceneview.utils.setFullScreen
 

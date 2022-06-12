@@ -1,30 +1,26 @@
-package com.example.pmr_projet
+package com.example.pmr_projet.ar_scene
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
+import com.example.pmr_projet.ArSceneNode
+import com.example.pmr_projet.ModelData
+import com.example.pmr_projet.R
+import com.example.pmr_projet.SceneData
 import com.google.ar.core.*
-import com.google.ar.sceneform.math.Vector3
-import dev.romainguy.kotlin.math.Float3
 import dev.romainguy.kotlin.math.Quaternion
-import dev.romainguy.kotlin.math.length
-import dev.romainguy.kotlin.math.normalize
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.arcore.*
-import io.github.sceneview.ar.node.ArModelNode
-import io.github.sceneview.ar.node.ArNode
 import io.github.sceneview.math.*
-import java.util.*
 import kotlin.math.*
 
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
-    lateinit var scenes: Map<String,ArScene>
+    lateinit var scenes: Map<String, SceneData>
+    val activeSceneNodes: MutableMap<String, ArSceneNode?> = mutableMapOf()
 
     var isLoading = false
         set(value) {
@@ -32,10 +28,30 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             loadingView.isGone = !value
         }
 
+    private fun setupSceneData() {
+        val catPose = Pose.makeTranslation(-0.20f,0f,-0.25f)
+            .compose(Pose.makeRotation(Quaternion.fromEuler(0f,1.5f).toFloatArray()))
+
+        val catModel = ModelData("models/Persian.glb", catPose, 0.1f)
+        val spiderbotModel = ModelData("models/spiderbot.glb",Pose.makeTranslation(0.35f,0f,0f),0.2f)
+
+        val alienModel = ModelData("models/Predator_s.glb",Pose.IDENTITY,0.3f)
+        val shipModel = ModelData("models/ship.glb",Pose.IDENTITY,0.3f)
+
+        val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel))
+        val dystopiaScene = SceneData(mapOf("spiderbot" to spiderbotModel))
+        val planetScene = SceneData(mapOf("predator" to alienModel))
+        val oceanScene = SceneData(mapOf("ship" to shipModel))
+
+        scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "ocean" to oceanScene)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loadingView = view.findViewById(R.id.loadingView)
         sceneView = view.findViewById(R.id.sceneView)
+        setupSceneData()
 
         sceneView.onArSessionCreated = {
             val imageDatabase = AugmentedImageDatabase(it)
@@ -53,38 +69,25 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             it.configure(config)
         }
 
-        val catPose = Pose.makeTranslation(-0.20f,0f,-0.25f)
-            .compose(Pose.makeRotation(Quaternion.fromEuler(0f,1.5f).toFloatArray()))
-
-        val catModel = ArScene.ArModel("cat","models/Persian.glb", catPose, 0.1f)
-        val spiderbotModel = ArScene.ArModel("spiderbot","models/spiderbot.glb",Pose.makeTranslation(0.35f,0f,0f),0.2f)
-
-        val alienModel = ArScene.ArModel("predator","models/Predator_s.glb",Pose.IDENTITY,0.3f)
-        val shipModel = ArScene.ArModel("ship","models/ship.glb",Pose.IDENTITY,0.3f)
-
-        val livingRoomScene = ArScene(setOf(catModel,spiderbotModel))
-        val dystopiaScene = ArScene(setOf(spiderbotModel))
-        val planetScene = ArScene(setOf(alienModel))
-        val oceanScene = ArScene(setOf(shipModel))
-
-        scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "ocean" to oceanScene)
-
         sceneView.onArFrame = {
-            isLoading = scenes.any { it.value.isLoading }
+            isLoading = activeSceneNodes.values.any { it?.isLoading ?: false }
 
             for (img in it.updatedAugmentedImages) {
                 if (img.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING) {
-                    scenes[img.name]?.run {
-                        if (!isLoaded && !isLoading) {
-                            it.updatedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }.forEach {
-                                scenes[it.name]?.unload()
-                            }
-                            img.let {
-                                load(it.createAnchor(it.centerPose), it.extentX, it.extentZ, sceneView)
-                            }
+                    if (!activeSceneNodes.containsKey(img.name)) {
+                        // Unload old scenes
+                        it.updatedAugmentedImages.filter { it.trackingMethod != AugmentedImage.TrackingMethod.FULL_TRACKING }.forEach {
+                            activeSceneNodes[it.name]?.destroy()
+                            activeSceneNodes.remove(it.name)
                         }
-                        sceneNode?.isVisible = true
+
+                        // Load new scene
+                        val newSceneNode = scenes[img.name]?.loadAR(sceneView)
+                        newSceneNode?.bindToAugmentedImage(img)
+                        activeSceneNodes[img.name] = newSceneNode
                     }
+                    activeSceneNodes[img.name]?.isVisible = true
+
                 } else if (img.trackingMethod == AugmentedImage.TrackingMethod.LAST_KNOWN_POSE) {
                     // Hide scene if the image angle > 60
                     val cameraDirection = it.camera.pose.zDirection.toVector3().normalized()
@@ -94,12 +97,10 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
                     }
 
                     if (angle > 60) {
-                        scenes[img.name]?.sceneNode?.isVisible = false
+                        activeSceneNodes[img.name]?.isVisible = false
                     }
                 }
             }
         }
-
-        loadingView = view.findViewById(R.id.loadingView)
     }
 }
