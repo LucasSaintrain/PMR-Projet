@@ -56,11 +56,11 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         val catPose = Pose.makeTranslation(-0.20f,0f,-0.25f)
             .compose(Pose.makeRotation(Quaternion.fromEuler(0f,1.5f).toFloatArray()))
 
-        val catModel = ArScene.ArModel("models/Persian.glb", catPose, 0.1f)
-        val spiderbotModel = ArScene.ArModel("models/spiderbot.glb",Pose.makeTranslation(0.35f,0f,0f),0.2f)
+        val catModel = ArScene.ArModel("cat","models/Persian.glb", catPose, 0.1f)
+        val spiderbotModel = ArScene.ArModel("spiderbot","models/spiderbot.glb",Pose.makeTranslation(0.35f,0f,0f),0.2f)
 
-        val alienModel = ArScene.ArModel("models/Predator_s.glb",Pose.IDENTITY,0.3f)
-        val shipModel = ArScene.ArModel("models/ship.glb",Pose.IDENTITY,0.3f)
+        val alienModel = ArScene.ArModel("predator","models/Predator_s.glb",Pose.IDENTITY,0.3f)
+        val shipModel = ArScene.ArModel("ship","models/ship.glb",Pose.IDENTITY,0.3f)
 
         val livingRoomScene = ArScene(setOf(catModel,spiderbotModel))
         val dystopiaScene = ArScene(setOf(spiderbotModel))

@@ -13,7 +13,7 @@ import io.github.sceneview.light.destroy
 import io.github.sceneview.model.destroy
 
 class ArScene(val models: Set<ArModel>) {
-    private val modelNodes = mutableSetOf<ArNode>()
+    private val modelNodes = mutableMapOf<String,ArNode>()
     var sceneNode : ArNode? = null
     var isLoaded = false
 
@@ -33,9 +33,10 @@ class ArScene(val models: Set<ArModel>) {
 
         models.forEach {
             ArNode().apply {
-                modelNodes.add(this)
+                modelNodes[it.id] = this
                 sceneNode!!.addChild(this)
 
+                isVisible = it.initialVisibility
                 pose = it.initialPose
                 scale = Float3(it.initialScale)
                 worldScale = Float3(worldScale[it.parentScaleAxis.value])
@@ -53,7 +54,7 @@ class ArScene(val models: Set<ArModel>) {
         if (!isLoaded || isLoading) return
         isLoading = true
 
-        modelNodes.forEach { it.destroy() }
+        modelNodes.values.forEach() { it.destroy() }
         modelNodes.clear()
 
         sceneNode?.destroy()
@@ -78,10 +79,9 @@ class ArScene(val models: Set<ArModel>) {
         }
     }
 
-    data class ArModel(val glbPath: String, val initialPose: Pose, val initialScale: Float,
-                       val modelScaleAxis: DirectionXYZ = DirectionXYZ.X,
-                       val parentScaleAxis: DirectionXYZ = DirectionXYZ.X,
-                       val autoAnimate: Boolean = true) {
+    data class ArModel(val id: String, val glbPath: String, val initialPose: Pose, val initialScale: Float,
+                       val modelScaleAxis: DirectionXYZ = DirectionXYZ.X, val parentScaleAxis: DirectionXYZ = DirectionXYZ.X,
+                       val autoAnimate: Boolean = true, val initialVisibility: Boolean = true) {
         var isLoading = false
 
         enum class DirectionXYZ(val value: Int) {
