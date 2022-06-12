@@ -12,8 +12,10 @@ import io.github.sceneview.ar.node.ArNode
 import io.github.sceneview.light.destroy
 import io.github.sceneview.model.destroy
 
-class ArScene(val models: Set<ArModel>) {
-    private val modelNodes = mutableMapOf<String,ArNode>()
+class ArScene(val models: Set<ArModel>,
+              val actions: Map<String, (ArScene)->Unit > = mapOf()) {
+
+    val modelNodes = mutableMapOf<String,ArNode>()
     var sceneNode : ArNode? = null
     var isLoaded = false
 
