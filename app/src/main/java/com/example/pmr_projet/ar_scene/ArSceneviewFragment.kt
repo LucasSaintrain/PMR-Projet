@@ -10,7 +10,7 @@ import com.example.pmr_projet.ModelData
 import com.example.pmr_projet.R
 import com.example.pmr_projet.SceneData
 import com.google.ar.core.*
-import dev.romainguy.kotlin.math.Quaternion
+import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.arcore.*
 import io.github.sceneview.math.*
@@ -29,14 +29,14 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         }
 
     private fun setupSceneData() {
-        val catPose = Pose.makeTranslation(-0.20f,0f,-0.25f)
-            .compose(Pose.makeRotation(Quaternion.fromEuler(0f,1.5f).toFloatArray()))
-
-        val catModel = ModelData("models/Persian.glb", catPose, 0.1f)
-        val spiderbotModel = ModelData("models/spiderbot.glb",Pose.makeTranslation(0.35f,0f,0f),0.2f)
-
-        val alienModel = ModelData("models/Predator_s.glb",Pose.IDENTITY,0.3f)
-        val shipModel = ModelData("models/ship.glb",Pose.IDENTITY,0.3f)
+        val catModel = ModelData("models/Persian.glb",
+            Scale(0.1f), Position(-0.20f,0f,-0.25f), Rotation(0f,90f, 0f)
+        )
+        val spiderbotModel = ModelData("models/spiderbot.glb",
+            Scale(0.2f), Position(0.35f,0f,0f)
+        )
+        val alienModel = ModelData("models/Predator_s.glb", Scale(0.3f))
+        val shipModel = ModelData("models/ship.glb", Scale(0.3f))
 
         val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel))
         val dystopiaScene = SceneData(mapOf("spiderbot" to spiderbotModel))
@@ -87,6 +87,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
                         activeSceneNodes[img.name] = newSceneNode
                     }
                     activeSceneNodes[img.name]?.isVisible = true
+                    activeSceneNodes[img.name]?.worldScale = Float3(img.extentX, 1f, img.extentZ)
 
                 } else if (img.trackingMethod == AugmentedImage.TrackingMethod.LAST_KNOWN_POSE) {
                     // Hide scene if the image angle > 60
