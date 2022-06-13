@@ -31,6 +31,10 @@ class ArSceneNode(val data: SceneData, sceneView: SceneView) : ArNode() {
         }
     }
 
+    fun invokeAction(id: String) {  // Invokes the corresponding action
+        data.actions[id]?.invoke(this)
+    }
+
     fun reset() {  // "Reloads" the scene
         resetRoot()
         resetParentTree()
