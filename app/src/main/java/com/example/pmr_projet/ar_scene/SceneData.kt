@@ -30,4 +30,15 @@ data class ModelData(val glbPath: String,
     enum class DirectionXYZ(val value: Int) {
         X(0), Y(1), Z(2)
     }
+
+    companion object {
+        val defaultScale = Scale(1f)
+        val defaultPosition = Position()
+        val defaultRotation = Rotation()
+        val defaultModelScaleAxis = DirectionXYZ.X
+        val defaultParentScaleAxis = DirectionXYZ.X
+        const val defaultParent = "root"
+        const val defaultVisibility = true
+        const val defaultAutoAnimate = true
+    }
 }

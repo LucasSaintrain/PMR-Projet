@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book>
+    <page>
+        <scene id="test">
+            <root visible="true">
+                <rotation y="90"/>
+            </root>
+            <model id="cat1" path="Persian.glb">
+                <scale xyz="0.1"/>
+                <position x="-1" z="-1"/>
+            </model>
+            <model id="cat2" path="Persian.glb">
+                <scale xyz="0.1"/>
+                <position xz="1"/>
+                <rotation y="90"/>
+            </model>
+            <model id="spiderbot1" path="spiderbot.glb">
+                <scale xyz="0.2"/>
+            </model>
+            <model id="spiderbot2" path="spiderbot.glb">
+                <scale xyz="0.2"/>
+                <position x="-1" z="1"/>
+            </model>
+            <model id="predator" path="Predator_s.glb">
+                <scale xyz="0.3"/>
+                <position x="1"/>
+            </model>
+            <action id="hide cats">
+                <changeVisibility target="cat1" visible="false"/>
+                <changeVisibility target="cat2" visible="false"/>
+            </action>
+            <action id="show cats">
+                <changeVisibility target="cat1" visible="true"/>
+                <changeVisibility target="cat2" visible="true"/>
+            </action>
+            <action id="move predator">
+                <changePosition target="predator" x="0.1" z="0.2"/>
+            </action>
+        </scene>
+        <content>
+            Once when I was six years old I saw a magnificent picture in a book, called True
+            Stories from Nature, about the primeval forest. It was a picture of a boa constrictor
+            in the act of swallowing an animal. Here is a copy of the drawing.
+            In the book it said: "Boa constrictors swallow their prey <keyword action="hide cats">whole</keyword>, without chewing
+            it. After that they are not able to move, and they sleep through the six months that
+            they need for digestion."
+        </content>
+    </page>
+</book>
