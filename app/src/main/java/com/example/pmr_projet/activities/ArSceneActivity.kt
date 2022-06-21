@@ -11,6 +11,7 @@ import io.github.sceneview.utils.doOnApplyWindowInsets
 import io.github.sceneview.utils.setFullScreen
 
 class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene) {
+    lateinit var sceneviewFragment: ArSceneviewFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +30,6 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene) {
             title = ""
         })
 
-        supportFragmentManager.commit {
-            add(R.id.containerFragment, ArSceneviewFragment::class.java, Bundle())
-        }
+        sceneviewFragment = supportFragmentManager.findFragmentById(R.id.containerFragment) as ArSceneviewFragment
     }
 }

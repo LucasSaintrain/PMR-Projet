@@ -1,20 +1,33 @@
 package com.example.pmr_projet.ar_scene
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.media.AudioManager
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
+import android.widget.CompoundButton
+import android.widget.TextView
+import android.widget.ToggleButton
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import com.example.pmr_projet.ArSceneNode
 import com.example.pmr_projet.ModelData
 import com.example.pmr_projet.R
 import com.example.pmr_projet.SceneData
+import com.example.pmr_projet.activities.VoskActivity
 import com.google.ar.core.*
 import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.arcore.*
 import io.github.sceneview.math.*
+import org.vosk.Model
+import org.vosk.android.SpeechService
+import org.vosk.android.SpeechStreamService
 import kotlin.math.*
 
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
@@ -23,6 +36,12 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     lateinit var button: Button
     lateinit var scenes: Map<String, SceneData>
     val activeSceneNodes: MutableMap<String, ArSceneNode?> = mutableMapOf()
+
+    private var model: Model? = null
+    private var speechService: SpeechService? = null
+    private var speechStreamService: SpeechStreamService? = null
+    private var resultView: TextView? = null
+    private lateinit var audioManager: AudioManager
 
 
     var isLoading = false
@@ -40,17 +59,52 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         )
         val alienModel = ModelData("models/Predator_s.glb", Scale(0.3f))
         val shipModel = ModelData("models/ship.glb", Scale(0.3f))
+        val miguelComeCu = ModelData("models/wer.glb", Scale(5f))
 
         val action = SceneAction.changePosition("cat", Position(0.2f,0f,0f))
 
         val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel), mapOf("mover gato" to action))
         val dystopiaScene = SceneData(mapOf("spiderbot" to spiderbotModel))
         val planetScene = SceneData(mapOf("predator" to alienModel))
-        val oceanScene = SceneData(mapOf("ship" to shipModel))
+        val oceanScene = SceneData(mapOf("prince" to miguelComeCu))
 
 
         scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "ocean" to oceanScene)
     }
+
+
+/*    fun voskCreate(view: View) {
+        view.run {
+            audioManager = applicationContext.getSystemService(Activity.AUDIO_SERVICE) as AudioManager
+
+            // Setup layout
+            resultView = findViewById(R.id.result_text)
+            setUiState(VoskActivity.STATE_START)
+            findViewById<View>(R.id.recognize_file).setOnClickListener { recognizeFile() }
+            findViewById<View>(R.id.recognize_mic).setOnClickListener { recognizeMicrophone() }
+            (findViewById<View>(R.id.pause) as ToggleButton).setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+                pause(
+                    isChecked
+                )
+            }
+//        LibVosk.setLogLevel(LogLevel.INFO)
+
+            // Check if user has given permission to record audio, init the model after permission is granted
+            val permissionCheck =
+                ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.RECORD_AUDIO)
+            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.RECORD_AUDIO),
+                    VoskActivity.PERMISSIONS_REQUEST_RECORD_AUDIO
+                )
+            } else {
+                initModel()
+            }
+        }
+
+    }*/
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
