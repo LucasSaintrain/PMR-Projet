@@ -11,7 +11,8 @@ object SceneAction {
     }
 
     fun changePosition(targetID: String = "root", position: Position) = { it: ArSceneNode ->
-        it.modelNodes[targetID]!!.position = position
+        //it.modelNodes[targetID]!!.position = position
+        it.modelNodes[targetID]!!.smooth(position, speed = 0.5f)
     }
     fun translate(targetID: String = "root", translation: Position) = { it: ArSceneNode ->
         it.modelNodes[targetID]!!.position += translation

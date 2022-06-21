@@ -3,6 +3,7 @@ package com.example.pmr_projet.ar_scene
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import com.example.pmr_projet.ArSceneNode
@@ -19,8 +20,10 @@ import kotlin.math.*
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
+    lateinit var button: Button
     lateinit var scenes: Map<String, SceneData>
     val activeSceneNodes: MutableMap<String, ArSceneNode?> = mutableMapOf()
+
 
     var isLoading = false
         set(value) {
@@ -38,10 +41,13 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         val alienModel = ModelData("models/Predator_s.glb", Scale(0.3f))
         val shipModel = ModelData("models/ship.glb", Scale(0.3f))
 
-        val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel))
+        val action = SceneAction.changePosition("cat", Position(0.2f,0f,0f))
+
+        val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel), mapOf("mover gato" to action))
         val dystopiaScene = SceneData(mapOf("spiderbot" to spiderbotModel))
         val planetScene = SceneData(mapOf("predator" to alienModel))
         val oceanScene = SceneData(mapOf("ship" to shipModel))
+
 
         scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "ocean" to oceanScene)
     }
@@ -50,6 +56,13 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         super.onViewCreated(view, savedInstanceState)
 
         loadingView = view.findViewById(R.id.loadingView)
+
+
+        button = view.findViewById(R.id.button)
+        button.setOnClickListener {
+            activeSceneNodes["living room"]?.invokeAction("mover gato")
+        }
+
         sceneView = view.findViewById(R.id.sceneView)
         setupSceneData()
 
