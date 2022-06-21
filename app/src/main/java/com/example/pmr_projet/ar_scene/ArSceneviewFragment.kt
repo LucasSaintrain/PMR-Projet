@@ -63,7 +63,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
         val action = SceneAction.changePosition("cat", Position(0.2f,0f,0f))
 
-        val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel), mapOf("mover gato" to action))
+        val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel), mapOf("move_cat" to action))
         val dystopiaScene = SceneData(mapOf("spiderbot" to spiderbotModel))
         val planetScene = SceneData(mapOf("predator" to alienModel))
         val oceanScene = SceneData(mapOf("prince" to miguelComeCu))
