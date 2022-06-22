@@ -67,7 +67,7 @@ class ArSceneNode(val data: SceneData, sceneView: SceneView) : ArNode() {
     }
 }
 
-class ModelRenderNode(val data: ModelData, sceneView: SceneView) : ModelNode() {
+class ModelRenderNode(val data: ModelData, sceneView: SceneView) : ArNode() {
     var isLoading = true
 
     init {

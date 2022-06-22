@@ -28,6 +28,16 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             loadingView.isGone = !value
         }
 
+
+    fun invokeSceneAction(sceneId: String, actionId: String) {
+        activeSceneNodes["sceneId"]?.invokeAction(actionId)
+    }
+
+    fun invokeSceneAction(actionId: String) {
+        activeSceneNodes.values.forEach { it?.invokeAction(actionId) }
+    }
+
+
     private fun setupSceneData() {
         val catModel = ModelData("models/Persian.glb",
             Scale(0.1f), Position(-0.20f,0f,-0.25f), Rotation(0f,90f, 0f)
