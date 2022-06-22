@@ -4,8 +4,8 @@
 4
 5    <uses-sdk
 6        android:minSdkVersion="24"
-6-->C:\Users\lucas\AndroidStudioProjects\PMR-Projet\models\src\main\AndroidManifest.xml
+6-->/home/luizgis/Documents/PMR/projet/PMR-Projet/models/src/main/AndroidManifest.xml
 7        android:targetSdkVersion="32" />
-7-->C:\Users\lucas\AndroidStudioProjects\PMR-Projet\models\src\main\AndroidManifest.xml
+7-->/home/luizgis/Documents/PMR/projet/PMR-Projet/models/src/main/AndroidManifest.xml
 8
 9</manifest>

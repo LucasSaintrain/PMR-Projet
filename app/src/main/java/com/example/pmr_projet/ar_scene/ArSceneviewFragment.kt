@@ -77,7 +77,58 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         val planetScene = SceneData(mapOf("predator" to alienModel))
         val oceanScene = SceneData(mapOf("prince" to miguelComeCu))
 
-        scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "ocean" to oceanScene)
+
+        /*
+        * Page 1
+        *
+        * */
+        /*Objects*/
+        val universo = ModelData("models/univers.glb", Scale(3f))
+        val avionPage2 = ModelData("models/avion.glb", Scale(1f),Position(0f,0.05f,0f), Rotation(0f,90f, 0f), autoAnimate = false, initialVisibility = false)
+        val soleilPage2 = ModelData("models/soleil.glb", Scale(0.5f),Position(0f,0.8f,0.5f), Rotation(0f,90f, 0f), initialVisibility = false)
+        val petitPrincePlanetPage2 = ModelData("models/petit_prince_planet.glb", Scale(0.5f), Position(0f, 0f, 0f), initialVisibility = false)
+
+        /*Actions*/
+        val actionShowPlanetWP2 = ArSceneActions.changeVisibility("petitPrincePlanetPage2", true)
+        val actionShowSoleil2 = ArSceneActions.changeVisibility("soleilPage2", true)
+        val actionHidePlanetWP2 = ArSceneActions.changeVisibility("petitPrincePlanetPage2", false)
+        val actionShowPlane2 = ArSceneActions.changeVisibility("avionPage2", true)
+        val actionAvionAnimate = ArSceneActions.animateAll("avionPage2", ArSceneActions.AnimateAction.START)
+        val actionAvionExit = ArSceneActions.smoothPosition("avionPage2", Position(0f,0.06f,1f))
+
+        /*Scene*/
+        val scenePage2 = SceneData(
+            mapOf("universo" to universo, "avionPage2" to avionPage2, "soleilPage2" to soleilPage2, "petitPrincePlanetPage2" to petitPrincePlanetPage2),
+            mapOf("actionShowPlanetWP2" to actionShowPlanetWP2,
+                "actionShowSoleil2" to actionShowSoleil2,
+                "actionHidePlanetWP2" to actionHidePlanetWP2,
+                "actionShowPlane2" to actionShowPlane2,
+                "actionAvionAnimate" to actionAvionAnimate,
+                "actionAvionExit" to actionAvionExit)
+        )
+        /*
+        * Page 2
+        *
+        * */
+        /*Objects*/
+        /*Actions*/
+        /*reuse object actions*/
+//        val scenePage4 = SceneData(
+//            mapOf("avion" to avion),
+//            mapOf()
+//        )
+
+        /*Scene*/
+
+
+        scenes = mapOf(
+            "living room" to livingRoomScene,
+            "futuristic dystopia" to dystopiaScene,
+            "alien planet" to planetScene,
+            "ocean" to oceanScene,
+            "scenePage2" to scenePage2
+//            "scenePage4" to scenePage4
+        )
     }
 
 
@@ -95,10 +146,13 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
             config.augmentedImageDatabase = requireContext().assets.let {
                 imageDatabase.apply {
-                    addImage("ocean", it.open("backgrounds/ocean.png").use { BitmapFactory.decodeStream(it) })
-                    addImage("alien planet", it.open("backgrounds/alien planet.png").use { BitmapFactory.decodeStream(it) })
+//                    addImage("ocean", it.open("backgrounds/ocean.png").use { BitmapFactory.decodeStream(it) })
+//                    addImage("alien planet", it.open("backgrounds/alien planet.png").use { BitmapFactory.decodeStream(it) })
                     addImage("living room", it.open("backgrounds/living room.png").use { BitmapFactory.decodeStream(it) })
-                    addImage("futuristic dystopia", it.open("backgrounds/futuristic dystopia.png").use { BitmapFactory.decodeStream(it) })
+//                    addImage("futuristic dystopia", it.open("backgrounds/futuristic dystopia.png").use { BitmapFactory.decodeStream(it) })
+//                    addImage("scenePage2", it.open("backgrounds/scene1.jpg").use { BitmapFactory.decodeStream(it) })
+//                    addImage("scenePage4", it.open("backgrounds/scene2.jpg").use { BitmapFactory.decodeStream(it) })
+
                 }
             }
 

@@ -116,9 +116,13 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
     override fun onResult(hypothesis: String) {
 
         val result = Gson().fromJson(hypothesis, VoskActivity.ResultClass::class.java)
-        if (result.text.contains("test", ignoreCase = true)){
-            sceneviewFragment.invokeSceneAction("living room", "mover gato")
+        for ((key, value) in ListActions.commandToSceneAction)
+        {
+            if (result.text.contains(key, ignoreCase = true)){
+                sceneviewFragment.invokeSceneAction(value.first, value.second)
+            }
         }
+
 
     }
 
