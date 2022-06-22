@@ -51,15 +51,15 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         )
         val alienModel = ModelData("models/Predator_s.glb", Scale(0.3f))
         val shipModel = ModelData("models/ship.glb", Scale(0.3f))
-        val universo = ModelData("models/univers.glb", Scale(3f))
-        val principeMonde = ModelData("models/principe.glb", Scale(1f),Position(-0.5f,0.05f,0.2f))
+        val universo = ModelData("models/univers2.glb", Scale(3f))
+        val principeMonde = ModelData("models/petit_prince_planet.glb", Scale(1f),Position(-0.5f,0.06f,0.2f))
         val avion = ModelData("models/avion.glb", Scale(1f),Position(0f,0.05f,0f), Rotation(0f,90f, 0f), autoAnimate = false)
-        val soleil = ModelData("models/soleil.glb", Scale(0.5f),Position(0f,0.8f,0.5f), Rotation(0f,90f, 0f))
+        val soleil = ModelData("models/soleil.glb", Scale(0.5f),Position(0f,0.05f,-0.6f), Rotation(0f,90f, 0f))
 //
 //      actions
 //        val action = SceneAction.changePosition("avion", Position(0.2f,-0.1f,0f))
         val action = SceneAction.animateAll("avion","start")
-        val voyage = SceneAction.changePosition("avion", Position(0f,0.06f,1f))
+        val voyage = SceneAction.changePosition("avion", Position(0f,0.06f,-1.5f))
 
         val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel), mapOf("mover gato" to action))
         val dystopiaScene = SceneData(mapOf("spiderbot" to spiderbotModel))
