@@ -1,19 +1,33 @@
 package com.example.pmr_projet.ar_scene
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.media.AudioManager
 import android.os.Bundle
 import android.view.*
+import android.widget.Button
+import android.widget.CompoundButton
+import android.widget.TextView
+import android.widget.ToggleButton
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import com.example.pmr_projet.ArSceneNode
 import com.example.pmr_projet.ModelData
 import com.example.pmr_projet.R
 import com.example.pmr_projet.SceneData
+import com.example.pmr_projet.activities.VoskActivity
 import com.google.ar.core.*
 import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.arcore.*
 import io.github.sceneview.math.*
+import org.vosk.Model
+import org.vosk.android.SpeechService
+import org.vosk.android.SpeechStreamService
 import kotlin.math.*
 
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
@@ -22,11 +36,28 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     lateinit var scenes: Map<String, SceneData>
     val activeSceneNodes: MutableMap<String, ArSceneNode?> = mutableMapOf()
 
+    private var model: Model? = null
+    private var speechService: SpeechService? = null
+    private var speechStreamService: SpeechStreamService? = null
+    private var resultView: TextView? = null
+    private lateinit var audioManager: AudioManager
+
+
     var isLoading = false
         set(value) {
             field = value
             loadingView.isGone = !value
         }
+
+
+    fun invokeSceneAction(sceneId: String, actionId: String) {  // Invokes an action on the chosen scene
+        activeSceneNodes[sceneId]?.invokeAction(actionId)
+    }
+
+    fun invokeSceneAction(actionId: String) {  // Invokes an action on all active scenes
+        activeSceneNodes.values.forEach { it?.invokeAction(actionId) }
+    }
+
 
     private fun setupSceneData() {
         val catModel = ModelData("models/Persian.glb",
@@ -37,19 +68,24 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         )
         val alienModel = ModelData("models/Predator_s.glb", Scale(0.3f))
         val shipModel = ModelData("models/ship.glb", Scale(0.3f))
+        val miguelComeCu = ModelData("models/wer.glb", Scale(5f))
 
-        val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel))
+        val action = ArSceneActions.smoothPosition("cat", Position(0.2f,0f,0f), 0.5f)
+
+        val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel), mapOf("mover gato" to action))
         val dystopiaScene = SceneData(mapOf("spiderbot" to spiderbotModel))
         val planetScene = SceneData(mapOf("predator" to alienModel))
-        val oceanScene = SceneData(mapOf("ship" to shipModel))
+        val oceanScene = SceneData(mapOf("prince" to miguelComeCu))
 
         scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "ocean" to oceanScene)
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         loadingView = view.findViewById(R.id.loadingView)
+
         sceneView = view.findViewById(R.id.sceneView)
         setupSceneData()
 
