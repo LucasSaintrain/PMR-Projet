@@ -9,85 +9,81 @@ import io.github.sceneview.math.Rotation
 typealias ArSceneAction = (ArSceneNode)->Unit
 
 object ArSceneActions {
-    fun changeScale(targetID: String = "root", scale: Scale) : ArSceneAction = { it ->
-        it.modelNodes[targetID]!!.scale = scale
+    fun changeVisibility(targetID: String = "root", visibility: Boolean? = null) : ArSceneAction = { it ->
+        if (visibility != null)  it.modelNodes[targetID]?.isVisible = visibility
     }
 
-    fun changeSmoothSpeed(targetID: String, smoothSpeed: Float) : ArSceneAction = { it ->
-        it.modelNodes[targetID]!!.smoothSpeed = smoothSpeed
+    fun changeSmoothSpeed(targetID: String = "root", smoothSpeed: Float? = null) : ArSceneAction = { it ->
+        if (smoothSpeed != null)  it.modelNodes[targetID]?.smoothSpeed = smoothSpeed
     }
 
-
-    fun changeVisibility(targetID: String, visibility: Boolean) : ArSceneAction = { it ->
-        it.modelNodes[targetID]!!.isVisible = visibility
+    fun changeScale(targetID: String = "root", scale: Scale = Scale()) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.scale = scale
     }
 
-    fun transform(targetID: String = "root", position: Position, rotation: Rotation) : ArSceneAction = { it ->
-        it.modelNodes[targetID]!!.transform(position = position, rotation = rotation)
+    fun transform(targetID: String = "root", position: Position = Position(), rotation: Rotation = Rotation()) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.transform(position = position, rotation = rotation)
     }
 
-    fun transformPosition(targetID: String = "root", position: Position) : ArSceneAction = { it ->
-        it.modelNodes[targetID]!!.transform(position = position)
+    fun transformPosition(targetID: String = "root", position: Position = Position()) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.transform(position = position)
     }
-    fun transformTranslate(targetID: String = "root", translation: Position) : ArSceneAction = { it ->
-        val position = it.position + translation
-        it.modelNodes[targetID]!!.transform(position = position)
+    fun transformTranslate(targetID: String = "root", translation: Position = Position()) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.let { it.transform(position = it.position+translation) }
     }
 
-    fun transformRotation(targetID: String = "root", rotation: Rotation) : ArSceneAction = { it ->
-        it.modelNodes[targetID]!!.transform(rotation = rotation)
+    fun transformRotation(targetID: String = "root", rotation: Rotation = Rotation()) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.transform(rotation = rotation)
     }
-    fun transformRotate(targetID: String = "root", rotation: Rotation) : ArSceneAction = { it ->
-        val endRotation = it.rotation + rotation
-        it.modelNodes[targetID]!!.transform(rotation = endRotation)
+    fun transformRotate(targetID: String = "root", rotation: Rotation = Rotation()) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.let { it.transform(rotation = it.rotation+rotation) }
     }
 
 
-    fun smooth(targetID: String = "root", position: Position, rotation: Rotation, speed: Float? = null) : ArSceneAction = { it ->
-        if (speed != null)
-            it.modelNodes[targetID]!!.smooth(position = position, rotation = rotation, speed = speed)
-        else
-            it.modelNodes[targetID]!!.smooth(position = position, rotation = rotation)
+    fun smooth(targetID: String = "root", position: Position = Position(), rotation: Rotation = Rotation(), speed: Float? = null) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.let {
+            if (speed != null)  it.smooth(position = position,rotation = rotation,speed = speed)
+            else                it.smooth(position = position, rotation = rotation)
+        }
     }
 
-    fun smoothPosition(targetID: String = "root", position: Position, speed: Float? = null) : ArSceneAction = { it ->
-        if (speed != null)
-            it.modelNodes[targetID]!!.smooth(position = position, speed = speed)
-        else
-            it.modelNodes[targetID]!!.smooth(position = position)
+    fun smoothPosition(targetID: String = "root", position: Position = Position(), speed: Float? = null) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.let {
+            if (speed != null)  it.smooth(position = position, speed = speed)
+            else                it.smooth(position = position)
+        }
     }
-    fun smoothTranslate(targetID: String = "root", translation: Position, speed: Float? = null) : ArSceneAction = { it ->
-        val position = it.position + translation
-        if (speed != null)
-            it.modelNodes[targetID]!!.smooth(position = position, speed = speed)
-        else
-            it.modelNodes[targetID]!!.smooth(position = position)
+    fun smoothTranslate(targetID: String = "root", translation: Position = Position(), speed: Float? = null) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.let {
+            if (speed != null)  it.smooth(position = it.position+translation, speed = speed)
+            else                it.smooth(position = it.position+translation)
+        }
     }
 
-    fun smoothRotation(targetID: String = "root", rotation: Rotation, speed: Float? = null) : ArSceneAction = { it ->
-        if (speed != null)
-            it.modelNodes[targetID]!!.smooth(rotation = rotation, speed = speed)
-        else
-            it.modelNodes[targetID]!!.smooth(rotation = rotation)
+    fun smoothRotation(targetID: String = "root", rotation: Rotation = Rotation(), speed: Float? = null) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.let {
+            if (speed != null)  it.smooth(rotation = rotation, speed = speed)
+            else                it.smooth(rotation = rotation)
+        }
     }
-    fun smoothRotate(targetID: String = "root", rotation: Rotation, speed: Float? = null) : ArSceneAction = { it ->
-        val endRotation = it.rotation + rotation
-        if (speed != null)
-            it.modelNodes[targetID]!!.smooth(rotation = endRotation, speed = speed)
-        else
-            it.modelNodes[targetID]!!.smooth(rotation = endRotation)
+    fun smoothRotate(targetID: String = "root", rotation: Rotation = Rotation(), speed: Float? = null) : ArSceneAction = { it ->
+        it.modelNodes[targetID]?.let {
+            if (speed != null)  it.smooth(rotation = it.rotation+rotation, speed = speed)
+            else                it.smooth(rotation = it.rotation+rotation)
+        }
     }
 
 
-    fun addChild(parentID: String, childID: String) : ArSceneAction = { it ->
-        val parentNode = it.modelNodes[parentID]!!
-        val childNode = it.modelNodes[childID]!!
-        parentNode.addChild(childNode)
+    fun addChild(parentID: String = "root", childID: String? = null) : ArSceneAction = { it ->
+        val parentNode = it.modelNodes[parentID]
+        val childNode = it.modelNodes[childID]
+        if (parentNode!=null && childNode!=null)
+            parentNode.addChild(childNode)
     }
 
-    fun animate(targetID: String, animateAction: AnimateAction, animation: String,
+    fun animate(targetID: String? = null, animateAction: AnimateAction = AnimateAction.START, animation: String? = null,
                 repeatMode: Int? = null, repeatCount: Int? = null) : ArSceneAction = { it ->
-        it.modelNodes[targetID]!!.modelInstance?.animate(animation)?.run {
+        it.modelNodes[targetID]?.modelInstance?.animate(animation)?.run {
             when (animateAction) {
                 AnimateAction.START -> start()
                 AnimateAction.PAUSE -> pause()
@@ -98,9 +94,9 @@ object ArSceneActions {
         }
     }
 
-    fun animateAll(targetID: String, animateAction: AnimateAction = AnimateAction.START,
+    fun animateAll(targetID: String? = null, animateAction: AnimateAction = AnimateAction.START,
                    repeat: Boolean = true, repeatMode: Int? = null, repeatCount: Int? = null) : ArSceneAction = { it ->
-        it.modelNodes[targetID]!!.modelInstance?.animate(repeat)?.run {
+        it.modelNodes[targetID]?.modelInstance?.animate(repeat)?.run {
             when (animateAction) {
                 AnimateAction.START -> start()
                 AnimateAction.PAUSE -> pause()

@@ -1,9 +1,10 @@
 package com.example.pmr_projet.parser
 
+import android.animation.ValueAnimator
 import com.example.pmr_projet.ArSceneNode
 import com.example.pmr_projet.ModelData
 import com.example.pmr_projet.SceneData
-import com.example.pmr_projet.ar_scene.SceneAction
+import com.example.pmr_projet.ar_scene.ArSceneActions
 import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
@@ -19,6 +20,9 @@ class BookXmlParser {
     //private var book : Book? = null
     //private var pages : ...<Page> = ...
     //private var page : Page? = null
+
+    private var keywordGroups : MutableList<Triple<String,String,String>> = mutableListOf()  // (keyword,scene,action)
+    private var currentKeywordAction: String? = null
 
     private var scenes : MutableMap<String,SceneData> = mutableMapOf()
     private val sceneProperties = object {
@@ -78,7 +82,7 @@ class BookXmlParser {
     private var scale : Scale? = null
     private var position : Position? = null
     private var rotation : Rotation? = null
-
+    private var text : String = ""
 
     fun parse(inputStream: InputStream): Map<String,SceneData> {
         try {
@@ -128,56 +132,99 @@ class BookXmlParser {
                                     attributes["id"]?.let { id = it }
                                 }
                             }
-                            "changeScale" -> {
-                                val target = attributes["target"]
-                                val scale = parseFloat3(attributes)
-                                val subAction = SceneAction.changeScale(target,scale)
-                                actionProperties.list.add(subAction)
-                            }
-                            "changePosition" -> {
-                                val target = attributes["target"]
-                                val position = parseFloat3(attributes)
-                                val subAction = SceneAction.changePosition(target,position)
-                                actionProperties.list.add(subAction)
-                            }
-                            "changeRotation" -> {
-                                val target = attributes["target"]
-                                val rotation = parseFloat3(attributes)
-                                val subAction = SceneAction.changeRotation(target,rotation)
-                                actionProperties.list.add(subAction)
-                            }
-                            "translate" -> {
-                                val target = attributes["target"]
-                                val translation = parseFloat3(attributes)
-                                val subAction = SceneAction.translate(target,translation)
-                                actionProperties.list.add(subAction)
-                            }
-                            "rotate" -> {
-                                val target = attributes["target"]
-                                val rotation = parseFloat3(attributes)
-                                val subAction = SceneAction.rotate(target,rotation)
-                                actionProperties.list.add(subAction)
-                            }
                             "changeVisibility" -> {
-                                val target = attributes["target"]
-                                val visibility = attributes["target"]
-                                val subAction = SceneAction.changeVisibility(target,visibility)
+                                val target = attributes["target"] ?: "root"
+                                val visibility = attributes["target"]?.toBooleanStrictOrNull()
+                                val subAction = ArSceneActions.changeVisibility(target,visibility)
+                                actionProperties.list.add(subAction)
+                            }
+                            "changeSmoothSpeed" -> {
+                                val target = attributes["target"] ?: "root"
+                                val smoothSpeed = attributes["smoothSpeed"]?.toFloatOrNull()
+                                val subAction = ArSceneActions.changeSmoothSpeed(target,smoothSpeed)
+                                actionProperties.list.add(subAction)
+                            }
+                            "changeScale" -> {
+                                val target = attributes["target"] ?: "root"
+                                val scale = parseFloat3(attributes)
+                                val subAction = ArSceneActions.changeScale(target,scale)
+                                actionProperties.list.add(subAction)
+                            }
+                            "transformPosition" -> {
+                                val target = attributes["target"] ?: "root"
+                                val position = parseFloat3(attributes)
+                                val subAction = ArSceneActions.transformPosition(target,position)
+                                actionProperties.list.add(subAction)
+                            }
+                            "transformTranslate" -> {
+                                val target = attributes["target"] ?: "root"
+                                val translation = parseFloat3(attributes)
+                                val subAction = ArSceneActions.transformTranslate(target,translation)
+                                actionProperties.list.add(subAction)
+                            }
+                            "transformRotation" -> {
+                                val target = attributes["target"] ?: "root"
+                                val rotation = parseFloat3(attributes)
+                                val subAction = ArSceneActions.transformRotation(target,rotation)
+                                actionProperties.list.add(subAction)
+                            }
+                            "transformRotate" -> {
+                                val target = attributes["target"] ?: "root"
+                                val rotation = parseFloat3(attributes)
+                                val subAction = ArSceneActions.transformRotate(target,rotation)
                                 actionProperties.list.add(subAction)
                             }
                             "addChild" -> {
-                                val parent = attributes["parent"]
+                                val parent = attributes["parent"] ?: "root"
                                 val child = attributes["child"]
-                                val subAction = SceneAction.addChild(parent,child)
+                                val subAction = ArSceneActions.addChild(parent,child)
                                 actionProperties.list.add(subAction)
                             }
                             "animate" -> {
-                                // ...
+                                val target = attributes["target"]
+                                val animation = attributes["animation"]
+                                val repeatCount = attributes["repeatCount"]?.toIntOrNull() ?: 0
+
+                                val animateAction = (attributes["action"]).let { string ->
+                                    ArSceneActions.AnimateAction.values().firstOrNull {it.name.equals(string,true)}
+                                } ?: ArSceneActions.AnimateAction.START
+
+                                val repeatMode = (attributes["repeatMode"]).let { string ->
+                                    when {
+                                        string.equals("REVERSE",true) -> ValueAnimator.REVERSE
+                                        string.equals("RESTART",true) -> ValueAnimator.RESTART
+                                        else -> null
+                                    }
+                                }
+
+                                val subAction = ArSceneActions.animate(target,animateAction,animation,repeatMode,repeatCount)
+                                actionProperties.list.add(subAction)
                             }
                             "animateAll" -> {
-                                // ...
+                                val target = attributes["target"]
+                                val repeat = attributes["repeat"]?.toBooleanStrictOrNull() ?: true
+                                val repeatCount = attributes["repeatCount"]?.toIntOrNull() ?: 0
+
+                                val animateAction = (attributes["action"]).let { string ->
+                                    ArSceneActions.AnimateAction.values().firstOrNull {it.name.equals(string,true)}
+                                } ?: ArSceneActions.AnimateAction.START
+
+                                val repeatMode = (attributes["repeatMode"]).let { string ->
+                                    when {
+                                        string.equals("REVERSE",true) -> ValueAnimator.REVERSE
+                                        string.equals("RESTART",true) -> ValueAnimator.RESTART
+                                        else -> null
+                                    }
+                                }
+
+                                val subAction = ArSceneActions.animateAll(target,animateAction,repeat,repeatMode,repeatCount)
+                                actionProperties.list.add(subAction)
                             }
+
                             "content" -> {}
-                            "keyword" -> {}
+                            "keyword" -> {
+                                currentKeywordAction = attributes["action"]
+                            }
                         }
                     }
                     XmlPullParser.END_TAG -> {
@@ -216,10 +263,18 @@ class BookXmlParser {
                                 }
                             }
                             "content" -> {}
-                            "keyword" -> {}
+                            "keyword" -> {
+                                currentKeywordAction?.let {
+                                    keywordGroups.add(
+                                        Triple(text,sceneProperties.id,it)
+                                    )
+                                }
+                            }
                         }
                     }
-                    XmlPullParser.TEXT -> {}
+                    XmlPullParser.TEXT -> {
+                        text = parser.text
+                    }
                 }
                 eventType = parser.next()
             }
