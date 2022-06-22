@@ -33,7 +33,6 @@ import kotlin.math.*
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
-    lateinit var button: Button
     lateinit var scenes: Map<String, SceneData>
     val activeSceneNodes: MutableMap<String, ArSceneNode?> = mutableMapOf()
 
@@ -50,6 +49,16 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             loadingView.isGone = !value
         }
 
+
+    fun invokeSceneAction(sceneId: String, actionId: String) {  // Invokes an action on the chosen scene
+        activeSceneNodes[sceneId]?.invokeAction(actionId)
+    }
+
+    fun invokeSceneAction(actionId: String) {  // Invokes an action on all active scenes
+        activeSceneNodes.values.forEach { it?.invokeAction(actionId) }
+    }
+
+
     private fun setupSceneData() {
         val catModel = ModelData("models/Persian.glb",
             Scale(0.1f), Position(-0.20f,0f,-0.25f), Rotation(0f,90f, 0f)
@@ -61,61 +70,21 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         val shipModel = ModelData("models/ship.glb", Scale(0.3f))
         val miguelComeCu = ModelData("models/wer.glb", Scale(5f))
 
-        val action = SceneAction.changePosition("cat", Position(0.2f,0f,0f))
+        val action = ArSceneActions.smoothPosition("cat", Position(0.2f,0f,0f), 0.5f)
 
         val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel), mapOf("mover gato" to action))
         val dystopiaScene = SceneData(mapOf("spiderbot" to spiderbotModel))
         val planetScene = SceneData(mapOf("predator" to alienModel))
         val oceanScene = SceneData(mapOf("prince" to miguelComeCu))
 
-
         scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "ocean" to oceanScene)
     }
-
-
-/*    fun voskCreate(view: View) {
-        view.run {
-            audioManager = applicationContext.getSystemService(Activity.AUDIO_SERVICE) as AudioManager
-
-            // Setup layout
-            resultView = findViewById(R.id.result_text)
-            setUiState(VoskActivity.STATE_START)
-            findViewById<View>(R.id.recognize_file).setOnClickListener { recognizeFile() }
-            findViewById<View>(R.id.recognize_mic).setOnClickListener { recognizeMicrophone() }
-            (findViewById<View>(R.id.pause) as ToggleButton).setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-                pause(
-                    isChecked
-                )
-            }
-//        LibVosk.setLogLevel(LogLevel.INFO)
-
-            // Check if user has given permission to record audio, init the model after permission is granted
-            val permissionCheck =
-                ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.RECORD_AUDIO)
-            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.RECORD_AUDIO),
-                    VoskActivity.PERMISSIONS_REQUEST_RECORD_AUDIO
-                )
-            } else {
-                initModel()
-            }
-        }
-
-    }*/
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         loadingView = view.findViewById(R.id.loadingView)
-
-
-        button = view.findViewById(R.id.button)
-        button.setOnClickListener {
-            activeSceneNodes["living room"]?.invokeAction("mover gato")
-        }
 
         sceneView = view.findViewById(R.id.sceneView)
         setupSceneData()

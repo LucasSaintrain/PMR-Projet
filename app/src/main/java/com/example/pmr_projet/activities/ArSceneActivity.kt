@@ -54,6 +54,10 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
 
         sceneviewFragment = supportFragmentManager.findFragmentById(R.id.containerFragment) as ArSceneviewFragment
 
+        // Button for testing
+        findViewById<Button>(R.id.button).setOnClickListener {
+            sceneviewFragment.invokeSceneAction("living room","mover gato")
+        }
 
         audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager
 
@@ -112,8 +116,8 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
     override fun onResult(hypothesis: String) {
 
         val result = Gson().fromJson(hypothesis, VoskActivity.ResultClass::class.java)
-        if (result.text.contains("suck me", ignoreCase = true)){
-            sceneviewFragment.activeSceneNodes["living room"]?.invokeAction("mover gato")
+        if (result.text.contains("test", ignoreCase = true)){
+            sceneviewFragment.invokeSceneAction("living room", "mover gato")
         }
 
     }
@@ -134,6 +138,7 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
 
     override fun onTimeout() {
     }
+
 
 
     private fun setErrorState(message: String?) {
