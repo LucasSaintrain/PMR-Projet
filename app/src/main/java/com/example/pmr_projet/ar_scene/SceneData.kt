@@ -1,12 +1,13 @@
 package com.example.pmr_projet
 
+import com.example.pmr_projet.ar_scene.ArSceneAction
 import io.github.sceneview.SceneView
 import io.github.sceneview.math.Scale
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
 
 data class SceneData(val models: Map<String, ModelData>,
-                     val actions: Map<String, (ArSceneNode)->Unit > = mapOf(),
+                     val actions: Map<String, ArSceneAction > = mapOf(),
                      val initialVisibility: Boolean = true,
                      val initialScale: Scale = Scale(1f),
                      val initialPosition: Position = Position(),

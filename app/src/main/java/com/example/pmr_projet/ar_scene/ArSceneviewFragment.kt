@@ -29,11 +29,11 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         }
 
 
-    fun invokeSceneAction(sceneId: String, actionId: String) {
+    fun invokeSceneAction(sceneId: String, actionId: String) {  // Invokes an action on the chosen scene
         activeSceneNodes["sceneId"]?.invokeAction(actionId)
     }
 
-    fun invokeSceneAction(actionId: String) {
+    fun invokeSceneAction(actionId: String) {  // Invokes an action on all active scenes
         activeSceneNodes.values.forEach { it?.invokeAction(actionId) }
     }
 
