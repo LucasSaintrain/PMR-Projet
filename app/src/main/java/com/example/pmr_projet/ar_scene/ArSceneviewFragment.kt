@@ -33,7 +33,7 @@ import kotlin.math.*
 class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
-    lateinit var scenes: Map<String, SceneData>
+    var scenes: Map<String, SceneData> = mapOf()
     val activeSceneNodes: MutableMap<String, ArSceneNode?> = mutableMapOf()
 
     private var model: Model? = null
@@ -87,7 +87,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
         loadingView = view.findViewById(R.id.loadingView)
 
         sceneView = view.findViewById(R.id.sceneView)
-        setupSceneData()
+        //setupSceneData()
 
         sceneView.onArSessionCreated = {
             val imageDatabase = AugmentedImageDatabase(it)

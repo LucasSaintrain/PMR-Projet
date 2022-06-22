@@ -1,49 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book>
     <page>
-        <scene id="test">
-            <root visible="true">
+        <scene id="scene2">
+            <model id="prince" path="models/univers.glb">
+                <scale xyz="3"/>
+            </model>
+            <model id="prence" path="models/univers.glb">
+                <scale xyz="1"/>
+                <position x="-0.5" y="0.05" z="0.2"/>
+            </model>
+            <model id="avion" path="models/avion.glb" autoAnimate="false">
+                <scale xyz="1"/>
+                <position y="0.05"/>
                 <rotation y="90"/>
-            </root>
-            <model id="cat1" path="Persian.glb">
-                <scale xyz="0.1"/>
-                <position x="-1" z="-1"/>
             </model>
-            <model id="cat2" path="Persian.glb">
-                <scale xyz="0.1"/>
-                <position xz="1"/>
+            <model id="soleil" path="models/soleil.glb">
+                <scale xyz="0.5"/>
+                <position y="0.8" z="0.5"/>
                 <rotation y="90"/>
             </model>
-            <model id="spiderbot1" path="spiderbot.glb">
-                <scale xyz="0.2"/>
+            <model id="petitPrincePlanetPage2" path="models/petit_prince_planet.glb" initialVisibility="false">
+                <scale xyz="0.5"/>
             </model>
-            <model id="spiderbot2" path="spiderbot.glb">
-                <scale xyz="0.2"/>
-                <position x="-1" z="1"/>
-            </model>
-            <model id="predator" path="Predator_s.glb">
-                <scale xyz="0.3"/>
-                <position x="1"/>
-            </model>
-            <action id="hide cats">
-                <changeVisibility target="cat1" visible="false"/>
-                <changeVisibility target="cat2" visible="false"/>
+
+            <action id="avion_animate">
+                <animateAll target="avion"/>
             </action>
-            <action id="show cats">
-                <changeVisibility target="cat1" visible="true"/>
-                <changeVisibility target="cat2" visible="true"/>
+            <action id="avion_move">
+                <smoothPosition target="avion" y="0.06" z="1"/>
             </action>
-            <action id="move predator">
-                <changePosition target="predator" x="0.1" z="0.2"/>
-            </action>
+
         </scene>
         <content>
-            Once when I was six years old I saw a magnificent picture in a book, called True
-            Stories from Nature, about the primeval forest. It was a picture of a boa constrictor
-            in the act of swallowing an animal. Here is a copy of the drawing.
-            In the book it said: "Boa constrictors swallow their prey <keyword action="hide cats">whole</keyword>, without chewing
-            it. After that they are not able to move, and they sleep through the six months that
-            they need for digestion."
+
         </content>
     </page>
 </book>

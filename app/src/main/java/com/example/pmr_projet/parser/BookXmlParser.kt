@@ -21,10 +21,10 @@ class BookXmlParser {
     //private var pages : ...<Page> = ...
     //private var page : Page? = null
 
-    private var keywordGroups : MutableList<Triple<String,String,String>> = mutableListOf()  // (keyword,scene,action)
+    var keywordGroups : MutableList<Triple<String,String,String>> = mutableListOf()  // (keyword,scene,action)
     private var currentKeywordAction: String? = null
 
-    private var scenes : MutableMap<String,SceneData> = mutableMapOf()
+    var scenes : MutableMap<String,SceneData> = mutableMapOf()
     private val sceneProperties = object {
         lateinit var id : String
         lateinit var models : MutableMap<String,ModelData>

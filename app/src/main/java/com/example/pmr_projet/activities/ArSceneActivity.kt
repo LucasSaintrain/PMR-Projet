@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
 import com.example.pmr_projet.ar_scene.ArSceneviewFragment
 import com.example.pmr_projet.R
+import com.example.pmr_projet.parser.BookXmlParser
 import com.google.gson.Gson
 import io.github.sceneview.utils.doOnApplyWindowInsets
 import io.github.sceneview.utils.setFullScreen
@@ -52,7 +53,12 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
             title = ""
         })
 
+        val bookParser = BookXmlParser()
+        bookParser.parse(application.assets.open("book.xml"))
+
         sceneviewFragment = supportFragmentManager.findFragmentById(R.id.containerFragment) as ArSceneviewFragment
+        sceneviewFragment.scenes = bookParser.scenes
+
 
         // Button for testing
         findViewById<Button>(R.id.button).setOnClickListener {
