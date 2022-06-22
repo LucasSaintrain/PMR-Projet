@@ -1,25 +1,17 @@
 package com.example.pmr_projet.ar_scene
 
-import android.Manifest
-import android.app.Activity
-import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
-import android.widget.CompoundButton
 import android.widget.TextView
-import android.widget.ToggleButton
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import com.example.pmr_projet.ArSceneNode
 import com.example.pmr_projet.ModelData
 import com.example.pmr_projet.R
 import com.example.pmr_projet.SceneData
-import com.example.pmr_projet.activities.VoskActivity
 import com.google.ar.core.*
 import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.ar.ArSceneView
@@ -55,21 +47,29 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             Scale(0.1f), Position(-0.20f,0f,-0.25f), Rotation(0f,90f, 0f)
         )
         val spiderbotModel = ModelData("models/spiderbot.glb",
-            Scale(0.2f), Position(0.35f,0f,0f)
+            Scale(0.2f), Position(0.35f,0f,0f), initialVisibility = false
         )
         val alienModel = ModelData("models/Predator_s.glb", Scale(0.3f))
         val shipModel = ModelData("models/ship.glb", Scale(0.3f))
-        val miguelComeCu = ModelData("models/wer.glb", Scale(5f))
-
-        val action = SceneAction.changePosition("cat", Position(0.2f,0f,0f))
+        val universo = ModelData("models/univers.glb", Scale(3f))
+        val principeMonde = ModelData("models/principe.glb", Scale(1f),Position(-0.5f,0.05f,0.2f))
+        val avion = ModelData("models/avion.glb", Scale(1f),Position(0f,0.05f,0f), Rotation(0f,90f, 0f), autoAnimate = false)
+        val soleil = ModelData("models/soleil.glb", Scale(0.5f),Position(0f,0.8f,0.5f), Rotation(0f,90f, 0f))
+//
+//      actions
+//        val action = SceneAction.changePosition("avion", Position(0.2f,-0.1f,0f))
+        val action = SceneAction.animateAll("avion","start")
+        val voyage = SceneAction.changePosition("avion", Position(0f,0.06f,1f))
 
         val livingRoomScene = SceneData(mapOf("cat" to catModel, "spiderbot" to spiderbotModel), mapOf("mover gato" to action))
         val dystopiaScene = SceneData(mapOf("spiderbot" to spiderbotModel))
         val planetScene = SceneData(mapOf("predator" to alienModel))
-        val oceanScene = SceneData(mapOf("prince" to miguelComeCu))
+
+        val page1 = SceneData(mapOf("prince" to universo,"prence" to principeMonde,"avion" to avion, "soleil" to soleil),
+                              mapOf("animate avion" to action, "bouger avion" to voyage))
 
 
-        scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "ocean" to oceanScene)
+        scenes = mapOf("living room" to livingRoomScene, "futuristic dystopia" to dystopiaScene, "alien planet" to planetScene, "page1" to page1)
     }
 
 
@@ -114,7 +114,10 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
         button = view.findViewById(R.id.button)
         button.setOnClickListener {
-            activeSceneNodes["living room"]?.invokeAction("mover gato")
+            activeSceneNodes["page1"]?.invokeAction("animate avion")
+            activeSceneNodes["page1"]?.invokeAction("bouger avion")
+
+
         }
 
         sceneView = view.findViewById(R.id.sceneView)
@@ -126,7 +129,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
             config.augmentedImageDatabase = requireContext().assets.let {
                 imageDatabase.apply {
-                    addImage("ocean", it.open("backgrounds/ocean.png").use { BitmapFactory.decodeStream(it) })
+                    addImage("page1", it.open("backgrounds/scene1.jpg").use { BitmapFactory.decodeStream(it) })
                     addImage("alien planet", it.open("backgrounds/alien planet.png").use { BitmapFactory.decodeStream(it) })
                     addImage("living room", it.open("backgrounds/living room.png").use { BitmapFactory.decodeStream(it) })
                     addImage("futuristic dystopia", it.open("backgrounds/futuristic dystopia.png").use { BitmapFactory.decodeStream(it) })

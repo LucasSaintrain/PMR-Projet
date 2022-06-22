@@ -5,12 +5,13 @@ import io.github.sceneview.math.Scale
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
 
-data class SceneData(val models: Map<String, ModelData>,
-                     val actions: Map<String, (ArSceneNode)->Unit > = mapOf(),
-                     val initialVisibility: Boolean = true,
-                     val initialScale: Scale = Scale(1f),
-                     val initialPosition: Position = Position(),
-                     val initialRotation: Rotation = Rotation())
+data class SceneData(
+    val models: Map<String, ModelData>,
+    val actions: Map<String, (ArSceneNode)->Unit > = mapOf(),
+    val initialVisibility: Boolean = true,
+    val initialScale: Scale = Scale(1f),
+    val initialPosition: Position = Position(),
+    val initialRotation: Rotation = Rotation())
 {
     fun loadAR(sceneView: SceneView) : ArSceneNode {
         return ArSceneNode(this, sceneView)
