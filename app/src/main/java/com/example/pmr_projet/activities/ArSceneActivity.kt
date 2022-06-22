@@ -69,6 +69,7 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
         } else {
             initModel()
         }
+
     }
 
 
@@ -76,6 +77,7 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
         StorageService.unpack(this, "model-en-us", "model",
             { model: Model? ->
                 this.model = model
+                recognizeMicrophone()
             }
         ) { exception: IOException -> setErrorState("Failed to unpack the model" + exception.message) }
     }
@@ -110,13 +112,8 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
     override fun onResult(hypothesis: String) {
 
         val result = Gson().fromJson(hypothesis, VoskActivity.ResultClass::class.java)
-        if (result.text.contains("volume", ignoreCase = true)){
-            if (result.text.contains("higher", ignoreCase = true)){
-                audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI)
-            }
-            if (result.text.contains("lower", ignoreCase = true)) {
-                audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI)
-            }
+        if (result.text.contains("suck me", ignoreCase = true)){
+            sceneviewFragment.activeSceneNodes["living room"]?.invokeAction("mover gato")
         }
 
     }
