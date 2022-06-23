@@ -66,11 +66,6 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
             Log.d("LUCAS",it.actions.toString())
         }
 
-        // Button for testing
-        findViewById<Button>(R.id.button).setOnClickListener {
-            sceneviewFragment.invokeSceneAction("scene1","show_soleil")
-        }
-
         audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager
 
         // Check if user has given permission to record audio, init the model after permission is granted

@@ -104,6 +104,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
                     addImage("alien planet", it.open("backgrounds/alien planet.png").use { BitmapFactory.decodeStream(it) })
                     addImage("living room", it.open("backgrounds/living room.png").use { BitmapFactory.decodeStream(it) })
                     addImage("futuristic dystopia", it.open("backgrounds/futuristic dystopia.png").use { BitmapFactory.decodeStream(it) })
+                    addImage("cape", it.open("backgrounds/cape.png").use { BitmapFactory.decodeStream(it) })
                 }
             }
 

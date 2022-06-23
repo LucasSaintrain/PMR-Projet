@@ -253,4 +253,26 @@
         </content>
     </page>
 
+
+    <page>
+        <scene id="cape">
+            <model id="complet" path="models/complet.glb" visible="false">
+                <scale xyz="3"/>
+            </model>
+
+            <action id="affichercomplet">
+                <changeVisibility visible="true"  target="complet"/>
+            </action>
+
+
+        </scene>
+        <content>
+
+            <keyword action="affichercomplet">prince</keyword>
+        </content>
+    </page>
+
+
+
+
 </book>

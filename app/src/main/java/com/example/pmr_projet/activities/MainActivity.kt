@@ -17,10 +17,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val sceneviewButton: Button = findViewById(R.id.buttonSceneview)
-        sceneviewButton.setOnClickListener{
+        //val sceneviewButton: Button = findViewById(R.id.buttonSceneview)
+        //sceneviewButton.setOnClickListener{
             val intent = Intent(this, ArSceneActivity::class.java)
             startActivity(intent)
-        }
+        //}
     }
 }
