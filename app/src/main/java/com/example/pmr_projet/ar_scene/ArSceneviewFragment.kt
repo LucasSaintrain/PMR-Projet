@@ -96,7 +96,7 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             config.augmentedImageDatabase = requireContext().assets.let {
                 imageDatabase.apply {
                     addImage("scene1", it.open("backgrounds/scene1.jpg").use { BitmapFactory.decodeStream(it) })
-                    addImage("scene2", it.open("backgrounds/scene2.jpg").use { BitmapFactory.decodeStream(it) })
+                    addImage("scene2", it.open("backgrounds/scene2.png").use { BitmapFactory.decodeStream(it) })
                     addImage("scene3", it.open("backgrounds/scene3.jpg").use { BitmapFactory.decodeStream(it) })
                     addImage("scene4", it.open("backgrounds/scene4.jpg").use { BitmapFactory.decodeStream(it) })
                     addImage("scene5", it.open("backgrounds/scene5.jpg").use { BitmapFactory.decodeStream(it) })
