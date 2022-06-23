@@ -95,7 +95,12 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
 
             config.augmentedImageDatabase = requireContext().assets.let {
                 imageDatabase.apply {
-                    addImage("ocean", it.open("backgrounds/ocean.png").use { BitmapFactory.decodeStream(it) })
+                    addImage("scene1", it.open("backgrounds/scene1.jpg").use { BitmapFactory.decodeStream(it) })
+                    addImage("scene2", it.open("backgrounds/scene2.jpg").use { BitmapFactory.decodeStream(it) })
+                    addImage("scene3", it.open("backgrounds/scene3.jpg").use { BitmapFactory.decodeStream(it) })
+                    addImage("scene4", it.open("backgrounds/scene4.jpg").use { BitmapFactory.decodeStream(it) })
+                    addImage("scene5", it.open("backgrounds/scene5.jpg").use { BitmapFactory.decodeStream(it) })
+                    addImage("scene_final", it.open("backgrounds/scene_final.jpg").use { BitmapFactory.decodeStream(it) })
                     addImage("alien planet", it.open("backgrounds/alien planet.png").use { BitmapFactory.decodeStream(it) })
                     addImage("living room", it.open("backgrounds/living room.png").use { BitmapFactory.decodeStream(it) })
                     addImage("futuristic dystopia", it.open("backgrounds/futuristic dystopia.png").use { BitmapFactory.decodeStream(it) })

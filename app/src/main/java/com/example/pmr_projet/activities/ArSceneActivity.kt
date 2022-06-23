@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -34,6 +35,7 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
     private var model: Model? = null
     private var speechService: SpeechService? = null
     private var speechStreamService: SpeechStreamService? = null
+    private lateinit var keywordGroups: List<Triple<String,String,String>>  // <keyword,scene,action>
     private lateinit var audioManager: AudioManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,11 +60,15 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
 
         sceneviewFragment = supportFragmentManager.findFragmentById(R.id.containerFragment) as ArSceneviewFragment
         sceneviewFragment.scenes = bookParser.scenes
+        keywordGroups = bookParser.keywordGroups
 
+        bookParser.scenes.values.forEach {
+            Log.d("LUCAS",it.actions.toString())
+        }
 
         // Button for testing
         findViewById<Button>(R.id.button).setOnClickListener {
-            sceneviewFragment.invokeSceneAction("living room","mover gato")
+            sceneviewFragment.invokeSceneAction("scene1","show_planet")
         }
 
         audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager
@@ -122,10 +128,11 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
     override fun onResult(hypothesis: String) {
 
         val result = Gson().fromJson(hypothesis, VoskActivity.ResultClass::class.java)
-        if (result.text.contains("test", ignoreCase = true)){
-            sceneviewFragment.invokeSceneAction("living room", "mover gato")
+        keywordGroups.forEach {
+            if (result.text.contains(it.first, ignoreCase = true)){
+                sceneviewFragment.invokeSceneAction(it.second, it.third)
+            }
         }
-
     }
 
     override fun onFinalResult(hypothesis: String) {

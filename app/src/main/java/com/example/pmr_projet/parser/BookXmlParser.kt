@@ -1,9 +1,11 @@
 package com.example.pmr_projet.parser
 
 import android.animation.ValueAnimator
+import android.util.Log
 import com.example.pmr_projet.ArSceneNode
 import com.example.pmr_projet.ModelData
 import com.example.pmr_projet.SceneData
+import com.example.pmr_projet.ar_scene.ArSceneAction
 import com.example.pmr_projet.ar_scene.ArSceneActions
 import dev.romainguy.kotlin.math.Float3
 import io.github.sceneview.math.Position
@@ -71,7 +73,7 @@ class BookXmlParser {
     }
     private val actionProperties = object {
         lateinit var id : String
-        lateinit var list : MutableList< (ArSceneNode)->Unit >
+        lateinit var list : MutableList<ArSceneAction>
 
         fun reset() {
             id = ""
@@ -118,6 +120,8 @@ class BookXmlParser {
                                     attributes["id"]?.let { id = it }
                                     attributes["path"]?.let { path = it }
                                     attributes["parent"]?.let { parent = it }
+                                    attributes["visible"]?.let { it.toBooleanStrictOrNull()?.let { visible = it } }
+                                    attributes["autoAnimate"]?.let { it.toBooleanStrictOrNull()?.let { autoAnimate = it } }
                                 }
                             }
                             "scale" -> {
@@ -134,7 +138,7 @@ class BookXmlParser {
                             }
                             "changeVisibility" -> {
                                 val target = attributes["target"] ?: "root"
-                                val visibility = attributes["target"]?.toBooleanStrictOrNull()
+                                val visibility = attributes["visible"]?.toBooleanStrictOrNull()
                                 val subAction = ArSceneActions.changeVisibility(target,visibility)
                                 actionProperties.list.add(subAction)
                             }
@@ -257,8 +261,12 @@ class BookXmlParser {
                             }
                             "action" -> {
                                 actionProperties.run {
+                                    val newList = list.toList()
                                     sceneProperties.actions[id] = { scene ->
-                                        list.forEach { it.invoke(scene) }
+                                        newList.forEach {
+                                            Log.d("LUCAS","uu")
+                                            it.invoke(scene)
+                                        }
                                     }
                                 }
                             }
@@ -341,7 +349,7 @@ class BookXmlParser {
         get() {
             val map = mutableMapOf<String,String>()
             for (i in 0 until attributeCount) {
-                map[getAttributeNamespace(i)] = getAttributeValue(i)
+                map[getAttributeName(i)] = getAttributeValue(i)
             }
             return map
         }

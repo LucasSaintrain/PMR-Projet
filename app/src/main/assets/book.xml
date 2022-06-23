@@ -1,38 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <book>
     <page>
-        <scene id="scene2">
-            <model id="prince" path="models/univers.glb">
+        <scene id="scene1">
+            <model id="univers" path="models/univers.glb">
                 <scale xyz="3"/>
             </model>
-            <model id="prence" path="models/univers.glb">
+            <model id="petitPrincePlanet" path="models/petit_prince_planet.glb" visible="false">
                 <scale xyz="1"/>
-                <position x="-0.5" y="0.05" z="0.2"/>
+                <position y="0.05"/>
             </model>
-            <model id="avion" path="models/avion.glb" autoAnimate="false">
+            <model id="avion" path="models/avion.glb" autoAnimate="false" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05"/>
                 <rotation y="90"/>
             </model>
-            <model id="soleil" path="models/soleil.glb">
+            <model id="soleil" path="models/soleil.glb" visible="false">
                 <scale xyz="0.5"/>
                 <position y="0.8" z="0.5"/>
                 <rotation y="90"/>
             </model>
-            <model id="petitPrincePlanetPage2" path="models/petit_prince_planet.glb" initialVisibility="false">
-                <scale xyz="0.5"/>
-            </model>
 
-            <action id="avion_animate">
-                <animateAll target="avion"/>
+            <action id="show_planet">
+                <changeVisibility target="petitPrincePlanet" visible="true"/>
             </action>
-            <action id="avion_move">
+            <action id="show_soleil">
+                <changeVisibility target="soleil" visible="true"/>
+            </action>
+            <action id="animate_move_avion">
+                <animateAll target="avion"/>
                 <smoothPosition target="avion" y="0.06" z="1"/>
             </action>
+            <action id="hide_planet_show_avion">
+                <changeVisibility target="petitPrincePlanet" visible="false"/>
+                <changeVisibility target="avion" visible="true"/>
+            </action>
+ 
+
 
         </scene>
         <content>
-
+            The little prince's planet was so small that he was bored to death. <keyword action="show_planet">In his world</keyword>, nothing was unknown to him.
+            In just ten minutes, he was already walking around it, then sitting down to gaze at the <keyword action="show_soleil">bright sun</keyword> and the other planets in the distance.
+            One day he decided to explore the rest of the universe. He took <keyword action="hide_planet_show_avion">his plane</keyword> and <keyword action="animate_move_avion">started the trip</keyword>.
         </content>
     </page>
 </book>
