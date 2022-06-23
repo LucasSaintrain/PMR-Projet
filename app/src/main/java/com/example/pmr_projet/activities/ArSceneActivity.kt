@@ -68,7 +68,7 @@ class ArSceneActivity : AppCompatActivity(R.layout.activity_ar_scene), Recogniti
 
         // Button for testing
         findViewById<Button>(R.id.button).setOnClickListener {
-            sceneviewFragment.invokeSceneAction("scene1","show_planet")
+            sceneviewFragment.invokeSceneAction("scene1","show_soleil")
         }
 
         audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager

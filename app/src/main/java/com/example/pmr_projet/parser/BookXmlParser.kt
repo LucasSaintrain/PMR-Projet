@@ -178,6 +178,34 @@ class BookXmlParser {
                                 val subAction = ArSceneActions.transformRotate(target,rotation)
                                 actionProperties.list.add(subAction)
                             }
+                            "smoothPosition" -> {
+                                val target = attributes["target"] ?: "root"
+                                val position = parseFloat3(attributes)
+                                val speed = attributes["speed"]?.toFloatOrNull()
+                                val subAction = ArSceneActions.smoothPosition(target,position,speed)
+                                actionProperties.list.add(subAction)
+                            }
+                            "smoothTranslate" -> {
+                                val target = attributes["target"] ?: "root"
+                                val translation = parseFloat3(attributes)
+                                val speed = attributes["speed"]?.toFloatOrNull()
+                                val subAction = ArSceneActions.smoothTranslate(target,translation,speed)
+                                actionProperties.list.add(subAction)
+                            }
+                            "smoothRotation" -> {
+                                val target = attributes["target"] ?: "root"
+                                val rotation = parseFloat3(attributes)
+                                val speed = attributes["speed"]?.toFloatOrNull()
+                                val subAction = ArSceneActions.smoothRotation(target,rotation,speed)
+                                actionProperties.list.add(subAction)
+                            }
+                            "smoothRotate" -> {
+                                val target = attributes["target"] ?: "root"
+                                val rotation = parseFloat3(attributes)
+                                val speed = attributes["speed"]?.toFloatOrNull()
+                                val subAction = ArSceneActions.smoothRotate(target,rotation,speed)
+                                actionProperties.list.add(subAction)
+                            }
                             "addChild" -> {
                                 val parent = attributes["parent"] ?: "root"
                                 val child = attributes["child"]
