@@ -78,7 +78,7 @@ class VoskActivity : Activity(), RecognitionListener {
     }
 
     private fun initModel() {
-        StorageService.unpack(this, "model-en-us", "model",
+        StorageService.unpack(this, "vosk-model-small-fr-0.22", "model",
             { model: Model? ->
                 this.model = model
                 setUiState(STATE_READY)

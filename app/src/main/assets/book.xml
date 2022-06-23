@@ -2,19 +2,22 @@
 <book>
     <page>
         <scene id="scene1">
+            <root>
+                <rotation y="180"/>
+            </root>
             <model id="univers" path="models/univers.glb">
                 <scale xyz="3"/>
             </model>
-            <model id="petitPrincePlanet" path="models/petit_prince_planet.glb" initialVisibility="false">
+            <model id="petitPrincePlanet" path="models/petit_prince_planet.glb" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05"/>
             </model>
-            <model id="avion" path="models/avion.glb" autoAnimate="false">
+            <model id="avion" path="models/avion.glb" autoAnimate="false" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05"/>
                 <rotation y="90"/>
             </model>
-            <model id="soleil" path="models/soleil.glb">
+            <model id="soleil" path="models/soleil.glb" visible="false">
                 <scale xyz="0.5"/>
                 <position y="0.8" z="0.5"/>
                 <rotation y="90"/>
@@ -33,15 +36,18 @@
 
             <action id="animate_move_avion">
                 <animateAll target="avion"/>
-                <smoothPosition target="avion" y="0.06" z="1"/>
+                <smoothPosition target="avion" y="0.06" z="-1" speed="0.5"/>
             </action>
 
         </scene>
         <content>
-            La planÃ¨te du petit prince Ã©tait tellement petite quâ€™il en Ã©tait mort dâ€™ennui.
-            <keyword action="show_planet" >Dans son monde </keyword> plus rien ne lui Ã©tait inconnu. En seulement dix minutes, il en faisait dÃ©jÃ  le tour, puis sâ€™asseyait pour contempler le <keyword action="show_soleil" >soleil brillant</keyword>ainsi que les autres planÃ¨tes au loin.
-            Un jour il dÃ©cida de partir Ã  la dÃ©couverte du reste de lâ€™univers.
-            Il <keyword action="hide_planet_show_avion" >prit son avion </keyword> et <keyword action="animate_move_avion"> commenÃ§a le voyage </keyword>.
+            La planète du petit prince était tellement petite qu’il en était mort d’ennui.
+            <keyword action="show_planet">Dans son monde </keyword>
+            plus rien ne lui était inconnu. En seulement dix minutes, il en faisait déjà le tour, puis s’asseyait pour contempler le
+            <keyword action="show_soleil">soleil brillant</keyword>
+            ainsi que les autres planètes au loin. Un jour il décida de partir à la découverte du reste de l’univers. Il
+            <keyword action="hide_planet_show_avion">prit son avion</keyword>
+            et commence le <keyword action="animate_move_avion">voyage</keyword>.
         </content>
     </page>
 
@@ -50,23 +56,17 @@
             <model id="univers" path="models/univers.glb">
                 <scale xyz="3"/>
             </model>
-            <model id="monde1" path="models/monde1.glb">
+            <model id="monde1" path="models/monde1.glb" visible="false">
                 <scale xyz="1"/>
-                <position x="-0.5" y="0.05" z="0.2"/>
             </model>
-            <model id="crown" path="models/crown.glb">
+            <model id="crown" path="models/crown.glb" visible="false">
                 <scale xyz="1"/>
-                <position x="-0.5" y="0.05" z="0.2"/>
             </model>
-            <model id="prince" path="models/prince.glb" autoAnimate="false">
+            <model id="prince" path="models/prince2.glb" autoAnimate="false">
                 <scale xyz="1"/>
-                <position y="0.05"/>
-                <rotation y="90"/>
             </model>
-            <model id="avion" path="models/avion.glb">
-                <scale xyz="0.5"/>
-                <position y="0.8" z="0.5"/>
-                <rotation y="90"/>
+            <model id="avion" path="models/avion2.glb" visible="false">
+                <scale xyz="1"/>
             </model>
 
             <action id="affichermonde1">
@@ -86,14 +86,15 @@
 
         </scene>
         <content>
-            Le petit prince commence alors sa visite par <keyword action="affichermonde1">la planÃ¨te GaÃ¯a</keyword>  .
-            Lors de son atterrissage il est accueilli par un grand jeune homme brun muni dâ€™une couronne dorÃ©e.
-            "Bienvenue Ã  GaÃ¯a petit prince ! Jâ€™ai longuement entendu parler de toi!â€
-            "Ah, oui? Mais alors qui Ãªtes vous?â€ RÃ©pliqua le petit prince.â€
-            â€œ <keyword action="afficherCrown">Je suis le roi</keyword> de cette planÃ¨te, voyons si tu es capable de relever mon dÃ©fi, si je gagne je rÃ¨gnerai sur toi dans ce royaume, et si tu gagnes je me soumettrai Ã  ton rÃ¨gne.. Papier, cailloux , ciseaux!â€
-            <keyword action="tournerPrince">Le petit prince gagna alors le dÃ©fi</keyword> , et se vit attribuer la couronne du roi de GaÃ¯a. Mais <keyword action="animerAvion">il dÃ©cida de prendre son avion</keyword> et de continuer son voyage en gardant sa couronne sur la tÃªte.
-
-
+            Le petit prince commence alors sa visite par
+            <keyword action="affichermonde1">la planète Gaïa</keyword>
+            . Lors de son atterrissage il est accueilli par un grand jeune homme brun muni d’une couronne dorée. "Bienvenue à Gaïa petit prince ! J’ai longuement entendu parler de toi!” "Ah, oui? Mais alors qui êtes vous?” Répliqua le petit prince.” “
+            <keyword action="afficherCrown">Je suis le roi</keyword>
+            de cette planète, voyons si tu es capable de relever mon défi, si je gagne je règnerai sur toi dans ce royaume, et si tu gagnes je me soumettrai à ton règne.. Papier, cailloux , ciseaux!”
+            <keyword action="tournerPrince">Le petit prince gagna alors le défi</keyword>
+            , et se vit attribuer la couronne du roi de Gaïa. Mais
+            <keyword action="animerAvion">il décida de prendre son avion</keyword>
+            et de continuer son voyage en gardant sa couronne sur la tête.
         </content>
     </page>
 
@@ -102,18 +103,18 @@
             <model id="univers" path="models/univers.glb">
                 <scale xyz="3"/>
             </model>
-            <model id="monde2" path="models/monde2.glb">
+            <model id="monde2" path="models/monde2.glb" visible="false">
                 <scale xyz="1"/>
             </model>
-            <model id="hat_monocle" path="models/hat_monocle.glb">
+            <model id="hat_monocle" path="models/hat_monocle.glb" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05" z="0.05"/>
             </model>
-            <model id="prince" path="models/prince.glb">
+            <model id="prince" path="models/prince.glb" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05" z="0.08"/>
             </model>
-            <model id="avion" path="models/avion.glb" autoAnimate="false">
+            <model id="avion" path="models/avion.glb" autoAnimate="false" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05"/>
                 <rotation y="90"/>
@@ -136,18 +137,15 @@
 
         </scene>
         <content>
-            Il poursuit alors son voyage en avion <keyword action="show_monde">sur la planÃ¨te Magica</keyword>.
-            A peine arrivÃ©, un <keyword action="show_hat_monocle">homme Ã  l'apparence mystÃ©rieuse</keyword> lui rÃ©serve un accueil festif avec des confettis ainsi que des friandises.
-            AprÃ¨s cet accueil spectaculaire, lâ€™homme de petite taille lui propose un tour de magie.
-            â€œJe suis le meilleur magicien de lâ€™univers! Choisis une carte au hasard! Je la devinerai du premier coupâ€ dit lâ€™homme mystÃ©rieux.
-            "Ah, oui? Comment allez vous faire?â€ demanda Le petit prince.
-            â€œNe pose pas trop de question, Petit Prince, choisis seulement une carte et je mâ€™occupe du reste!â€ dit le prÃ©tendu magicien.
-            Le petit prince choisit alors lâ€™as de pique.
-            Au moment venu de trouver la carte, le prÃ©tendu magicien propose lamentablement le huit de trÃ¨fle.
-            <keyword action="show_prince">Le Petit Prince lui montre alors </keyword> comment rÃ©aliser correctement le tour de magie.
-            FrustrÃ© le magicien chassa alors le Petit Prince de sa planÃ¨te.
-            <keyword action="show_move_avion">Le Petit Prince prit alors son envol </keyword>.
-
+            Il poursuit alors son voyage en avion
+            <keyword action="show_monde">sur la planète Magica</keyword>
+            . A peine arrivé, un
+            <keyword action="show_hat_monocle">homme à l'apparence mystérieuse</keyword>
+            lui réserve un accueil festif avec des confettis ainsi que des friandises. Après cet accueil spectaculaire, l’homme de petite taille lui propose un tour de magie. “Je suis le meilleur magicien de l’univers! Choisis une carte au hasard! Je la devinerai du premier coup” dit l’homme mystérieux. "Ah, oui? Comment allez vous faire?” demanda Le petit prince. “Ne pose pas trop de question, Petit Prince, choisis seulement une carte et je m’occupe du reste!” dit le prétendu magicien. Le petit prince choisit alors l’as de pique. Au moment venu de trouver la carte, le prétendu magicien propose lamentablement le huit de trèfle.
+            <keyword action="show_prince">Le Petit Prince lui montre alors </keyword>
+            comment réaliser correctement le tour de magie. Frustré le magicien chassa alors le Petit Prince de sa planète.
+            <keyword action="show_move_avion">Le Petit Prince prit alors son envol </keyword>
+            .
         </content>
     </page>
 
@@ -156,18 +154,18 @@
             <model id="univers" path="models/univers.glb">
                 <scale xyz="3"/>
             </model>
-            <model id="monde3" path="models/monde3.glb">
+            <model id="monde3" path="models/monde3.glb" visible="false">
                 <scale xyz="1"/>
             </model>
-            <model id="calculations" path="models/calculations.glb">
+            <model id="calculations" path="models/calculations.glb" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05" z="0.05"/>
             </model>
-            <model id="prince" path="models/prince.glb">
+            <model id="prince" path="models/prince.glb" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05" z="0.08"/>
             </model>
-            <model id="avion" path="models/avion.glb" autoAnimate="false">
+            <model id="avion" path="models/avion.glb" autoAnimate="false" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05"/>
                 <rotation y="90"/>
@@ -190,17 +188,15 @@
 
         </scene>
         <content>
-            Il poursuit alors son voyage <keyword action="show_monde3"> sur la planÃ¨te Numera </keyword>.
-            ArrivÃ© sur la planÃ¨te , il entend la <keyword action="show_calculations">voix dâ€™un businessman </keyword>compter avec conviction : â€œNumÃ©ro 1437!â€
-            "Bienvenue 1437! Je vais te poser une sÃ©rie de question auquel tu vas devoir rÃ©pondre correctement, si tu Ã©choues Ã  cette Ã©valuation, tu seras renvoyÃ© de lâ€™universâ€
-            "Ah, oui? Mais qui Ãªtes vous? Et quelle genre de question allez vous me poser? Et Pourquoi mâ€™appelez vous 1437â€
-            â€œHep hep hepâ€¦ Câ€™est moi qui pose les questions ici. Pour ton info tu es le numÃ©ro 1437 Ã  fouler la terre de la planÃ¨te Numera. Et moi, je suis le PDG de lâ€™univers. Je vais mâ€™assurer que vous avez les connaissances minimales de tout habitant de lâ€™univers.â€
-            â€œCombien y a-t-il dâ€™Ã©toiles dans lâ€™univers?â€ demanda le PDG.
-            â€œ501â€<keyword action="show_prince">rÃ©pond le Petit Prince </keyword> sans aucune hÃ©sitation.
-            â€œNon !â€ sâ€™exclama le PDG, â€œSeulement 500!â€
-            â€œLe Soleil est la 501 Ã¨me Ã©toile de lâ€™universâ€ rÃ©pliqua le Petit Prince avec insolence.
-            â€œCâ€™est vrai tu as raison, tu es libre de circuler librement dans lâ€™univers, voici ton passeport !â€
-            Alors le Petit Prince <keyword action="show_move_avion">continua son voyage en avion</keyword> jusquâ€™Ã  la planÃ¨te Lumia.
+            Il poursuit alors son voyage
+            <keyword action="show_monde3"> sur la planète Numera </keyword>
+            . Arrivé sur la planète , il entend la
+            <keyword action="show_calculations">voix d’un businessman </keyword>
+            compter avec conviction : “Numéro 1437!” "Bienvenue 1437! Je vais te poser une série de question auquel tu vas devoir répondre correctement, si tu échoues à cette évaluation, tu seras renvoyé de l’univers” "Ah, oui? Mais qui êtes vous? Et quelle genre de question allez vous me poser? Et Pourquoi m’appelez vous 1437” “Hep hep hep… C’est moi qui pose les questions ici. Pour ton info tu es le numéro 1437 à fouler la terre de la planète Numera. Et moi, je suis le PDG de l’univers. Je vais m’assurer que vous avez les connaissances minimales de tout habitant de l’univers.” “Combien y a-t-il d’étoiles dans l’univers?” demanda le PDG. “501”
+            <keyword action="show_prince">répond le Petit Prince </keyword>
+            sans aucune hésitation. “Non !” s’exclama le PDG, “Seulement 500!” “Le Soleil est la 501 ème étoile de l’univers” répliqua le Petit Prince avec insolence. “C’est vrai tu as raison, tu es libre de circuler librement dans l’univers, voici ton passeport !” Alors le Petit Prince
+            <keyword action="show_move_avion">continua son voyage en avion</keyword>
+            jusqu’à la planète Lumia.
         </content>
     </page>
 
@@ -209,20 +205,20 @@
             <model id="univers" path="models/univers.glb">
                 <scale xyz="3"/>
             </model>
-            <model id="monde4" path="models/monde4.glb">
+            <model id="monde4" path="models/monde4.glb" visible="false">
                 <scale xyz="1"/>
                 <position x="-0.5" y="0.05" z="0.2"/>
             </model>
-            <model id="lighthouse" path="models/lighthouse.glb">
+            <model id="lighthouse" path="models/lighthouse.glb" visible="false">
                 <scale xyz="1"/>
                 <position x="-0.5" y="0.05" z="0.2"/>
             </model>
-            <model id="prince" path="models/prince.glb" autoAnimate="false">
+            <model id="prince" path="models/prince.glb" autoAnimate="false" visible="false">
                 <scale xyz="1"/>
                 <position y="0.05"/>
                 <rotation y="90"/>
             </model>
-            <model id="avion" path="models/avion.glb">
+            <model id="avion" path="models/avion.glb" visible="false">
                 <scale xyz="0.5"/>
                 <position y="0.8" z="0.5"/>
                 <rotation y="90"/>
@@ -245,15 +241,15 @@
 
         </scene>
         <content>
-            ArrivÃ© sur la <keyword action="affichermonde4">planÃ¨te Lumia</keyword>, câ€™est lâ€™obscuritÃ© totale. il aperÃ§oit un phare mais aucune lumiÃ¨re nâ€™Ã©mane de ce dernier. <keyword action="afficherLighthouse"> Il entre alors dans le phare </keyword>, et aperÃ§oit un vieux monsieur lÃ©gÃ¨rement malade.
-            â€œCâ€™est toi le Petit Prince?â€ Dit le vieil homme.
-            â€œOui câ€™est bien moiâ€ dit le Prince.
-            â€œEst-ce que tu pourrais me rendre un petit service sâ€™il te plaÃ®tâ€ demanda modestement le vieil homme.
-            â€œOui bien-sÃ»râ€ <keyword action="afficherPrince">rÃ©pondit le Petit Prince</keyword>.
-            â€œVois-tu que ce phare a pour rÃ´le dâ€™Ã©clairer lâ€™univers? Câ€™est moi qui me charge de le diriger vers les planÃ¨tes qui ont besoin de lumiÃ¨re. Mais je suis maintenant trop fatiguÃ© pour le faire. Tiens donc les clÃ©s! je compte sur toi filston. Lâ€™univers a besoin de toi.â€
-            Ainsi <keyword action="animerAvion">le Petit Prince prit son Avion</keyword> et retourna chez lui le cÅ“ur plein de merveilleux souvenirs auxquels il repense au moindre ennui. Il nâ€™oublie pas dâ€™aller sur Lumia de temps en temps pour rediriger correctement le phare.
-
-
+            Arrivé sur la
+            <keyword action="affichermonde4">planète Lumia</keyword>
+            , c’est l’obscurité totale. il aperçoit un phare mais aucune lumière n’émane de ce dernier.
+            <keyword action="afficherLighthouse"> Il entre alors dans le phare </keyword>
+            , et aperçoit un vieux monsieur légèrement malade. “C’est toi le Petit Prince?” Dit le vieil homme. “Oui c’est bien moi” dit le Prince. “Est-ce que tu pourrais me rendre un petit service s’il te plaît” demanda modestement le vieil homme. “Oui bien-sûr”
+            <keyword action="afficherPrince">répondit le Petit Prince</keyword>
+            . “Vois-tu que ce phare a pour rôle d’éclairer l’univers? C’est moi qui me charge de le diriger vers les planètes qui ont besoin de lumière. Mais je suis maintenant trop fatigué pour le faire. Tiens donc les clés! je compte sur toi filston. L’univers a besoin de toi.” Ainsi
+            <keyword action="animerAvion">le Petit Prince prit son Avion</keyword>
+            et retourna chez lui le cœur plein de merveilleux souvenirs auxquels il repense au moindre ennui. Il n’oublie pas d’aller sur Lumia de temps en temps pour rediriger correctement le phare.
         </content>
     </page>
 

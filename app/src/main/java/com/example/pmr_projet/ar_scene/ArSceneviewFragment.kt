@@ -108,6 +108,8 @@ class ArSceneviewFragment : Fragment(R.layout.fragment_ar_sceneview) {
             }
 
             it.configure(config)
+
+            sceneView.planeRenderer.isVisible = false
         }
 
         sceneView.onArFrame = {
